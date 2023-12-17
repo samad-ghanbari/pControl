@@ -14,7 +14,7 @@ $this->title = 'PDCP|New Project';
     <a href="<?= Yii::$app->request->referrer; ?>"><i class="fa fa-chevron-left fa-2x" style="color:white;position: relative;"></i></a>
 </p>
 
-<div class="bg-cover bg-gradient">
+<div class="topic-cover bg-gradient">
 <div class="row" style="width:100%;">
     <div class="col-md-8">
         <div style="width: 90%; max-width:700px; margin:auto; padding: 20px;" >

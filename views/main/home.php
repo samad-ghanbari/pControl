@@ -54,7 +54,7 @@ if(isset($sessoin['user']))
                 <br />
                 <!-- flex-wrap:wrap;  -->
                 <!-- <div style="display: flex;flex-direction:column; align-items:center; justify-content: center; overflow: hidden; margin-bottom: 50px;"> -->
-                <div id="gwcontainer" style="overflow:auto; background-color:#eee; direction:rtl; height: 100%; font-size: 14px;">
+                <div id="gwcontainer" style="overflow:auto; background-color:#fff; direction:rtl; height: 100%; font-size: 14px;">
 
                     <?php
                     $url = Yii::$app->request->baseUrl.'/project/index?id=';
@@ -65,7 +65,7 @@ if(isset($sessoin['user']))
                     else
                     {
                         echo GridView::widget([
-                            'tableOptions'=>['id'=>"users-Table", 'class'=>'table table-striped table-bordered table-hover text-center'],
+                            'tableOptions'=>['id'=>"users-Table", 'class'=>'table table-striped table-bordered table-hover text-center '],
                             //'headerRowOptions'=>['class'=>'bg-info text-center'],
                             'rowOptions' =>function ($model, $key, $index, $grid) {return ['id'=>'row'.$model['project_id'], 'project-id'=>$model['project_id'], 'class'=>'table_row', 'style'=>"cursor:pointer", 'onclick'=>'activateRow(this.getAttribute("id"));', 'ondblclick'=>'showProject(this.getAttribute("project-id"));'];},
                             'dataProvider' => $dataProvider,
@@ -86,26 +86,26 @@ if(isset($sessoin['user']))
                                 //1
                                 [
                                     'attribute' =>'project',
-                                    'headerOptions' => ['class' => 'bg-info text-center'],
+                                    'headerOptions' => ['class' => 'bg-success text-center'],
                                     'contentOptions' => ['class' => 'text-center', 'style'=>"vertical-align: middle;min-width:150px;", 'title'=>'پروژه'],
                                 ],
                                 //3
                                 [
                                     'attribute' =>'office',
-                                    'headerOptions' => ['class' => 'bg-info text-center'],
+                                    'headerOptions' => ['class' => 'bg-success text-center'],
                                     'contentOptions' => ['class' => 'text-center', 'style'=>"vertical-align: middle;min-width:80px;", 'title'=>'اداره کل'],
                                 ],
                                 //۴
                                 [
                                     'attribute' =>'ts',
-                                    'headerOptions' => ['class' => 'bg-info text-center'],
+                                    'headerOptions' => ['class' => 'bg-success text-center'],
                                     'contentOptions' => ['class' => 'text-center', 'style'=>"vertical-align: middle;min-width:80px;", 'title'=>'زمان'],
                                     'visible'=>0,
                                 ],
                                 //8
                                 [
                                     'attribute' =>'project_weight',
-                                    'headerOptions' => ['class' => 'bg-info text-center'],
+                                    'headerOptions' => ['class' => 'bg-success text-center'],
                                     'contentOptions' => ['class' => 'text-center', 'style'=>"vertical-align: middle;min-width:80px;", 'title'=>'وزن پروژه'],
                                     'visible'=>0
                                 ],
@@ -113,24 +113,24 @@ if(isset($sessoin['user']))
                                 
                                 [
                                     'attribute' =>'contract_subject',
-                                    'headerOptions' => ['class' => 'bg-info text-center'],
+                                    'headerOptions' => ['class' => 'bg-success text-center'],
                                     'contentOptions' => ['class' => 'text-center', 'style'=>"vertical-align: middle;min-width:80px;", 'title'=>'موضوع قرارداد'],
                                 ],
                                 [
                                     'attribute' =>'contract_company',
-                                    'headerOptions' => ['class' => 'bg-info text-center'],
+                                    'headerOptions' => ['class' => 'bg-success text-center'],
                                     'contentOptions' => ['class' => 'text-center', 'style'=>"vertical-align: middle;min-width:80px;", 'title'=>'شرکت طرف قرارداد'],
                                 ],
                                 [
                                     'attribute' =>'contract_date',
-                                    'headerOptions' => ['class' => 'bg-info text-center'],
+                                    'headerOptions' => ['class' => 'bg-success text-center'],
                                     'contentOptions' => ['class' => 'text-center', 'style'=>"vertical-align: middle;min-width:80px;", 'title'=>'تاریخ عقد قرارداد'],
                                 ],
                                 [
                                     'class' => 'yii\grid\ActionColumn',
                                     'template' => '{project_detail}',
                                     'header'=>"پارامترهای پروژه",
-                                    'headerOptions' => ['class' => 'bg-info text-center'],
+                                    'headerOptions' => ['class' => 'bg-success text-center text-info'],
                                     'buttons' => ['project_detail' => function($url, $model, $key){ return "<a href=\"$url\"><i class='fa fa-info-circle text-info'></i></a>";}],
                                     'urlCreator' => function ($action, $model, $key, $index)
                                         {
