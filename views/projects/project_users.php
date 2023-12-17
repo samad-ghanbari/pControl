@@ -24,6 +24,12 @@ $this->registerCssFile(Yii::$app->request->baseUrl.'/web/css/sidebar.css');
 
 
 <div class="layout-wrapper bg-gradient">
+
+        <div class="layout-narrow-panel setting-sidebar">
+            <?= \app\components\SidebarWidget::widget(['index'=>4, "projectId"=>$pId]); ?>
+        </div>
+
+
         <div class="layout-wide-panel">
 
             <div style="width:95%; margin:auto;">
@@ -178,9 +184,7 @@ $this->registerCssFile(Yii::$app->request->baseUrl.'/web/css/sidebar.css');
             ?>
         </div>
 
-        <div class="layout-narrow-panel setting-sidebar">
-            <?= \app\components\SidebarWidget::widget(['index'=>4, "projectId"=>$pId]); ?>
-        </div>
+
     </div>
 
 <?php

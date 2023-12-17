@@ -20,7 +20,12 @@ if(isset($project['id'])) $pId = $project['id'];
 
 ?>
 
-<div class="layout-wrapper bg-gradient">
+<div class="layout-wrapper bg-gradient" >
+    <div class="layout-narrow-panel setting-sidebar">
+        <?= \app\components\SidebarWidget::widget(['index'=>1, "projectId"=>$pId]); ?>
+    </div>
+
+
     <div class="layout-wide-panel">
 
         <div style="width:95%; margin:auto;">
@@ -124,10 +129,6 @@ if(isset($project['id'])) $pId = $project['id'];
         <?php
             }
         ?>
-    </div>
-
-    <div class="layout-narrow-panel setting-sidebar">
-        <?= \app\components\SidebarWidget::widget(['index'=>1, "projectId"=>$pId]); ?>
     </div>
 </div>
 

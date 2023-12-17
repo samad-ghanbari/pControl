@@ -13,6 +13,12 @@ Yii::$app->formatter->nullDisplay = "";
 
 
 <div class="layout-wrapper  bg-gradient">
+
+
+    <div class="layout-narrow-panel setting-sidebar">
+        <?= \app\components\SidebarWidget::widget(['index'=>3, "projectId"=>-1]); ?>
+    </div>
+
     <div class="layout-wide-panel">
         <i class="fa fa-users fa-2x" style="display: block; text-align:center; margin:10px auto;color:white;" ></i>
         <h3 style="text-align: center;color:white;">مدیریت کاربران </h3>
@@ -111,9 +117,6 @@ Yii::$app->formatter->nullDisplay = "";
 
     </div>
 
-    <div class="layout-narrow-panel setting-sidebar">
-        <?= \app\components\SidebarWidget::widget(['index'=>3, "projectId"=>-1]); ?>
-    </div>
 </div>
 
 

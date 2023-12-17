@@ -39,7 +39,7 @@ class ProjectsController extends \yii\web\Controller
         return $this->render('index', ['model'=>$model, 'url'=>$url]);
     }
 
-    public function actionNew_project()
+    public function actionNew_project0()
     {
         $session = Yii::$app->session;
         $session->open();
@@ -84,6 +84,183 @@ class ProjectsController extends \yii\web\Controller
         return $this->render('new_project', ['model'=>$model]);
     }
 
+
+    public function actionNew_project()
+    {
+        $session = Yii::$app->session;
+        $session->open();
+
+        $model = new \app\models\PcProjects();
+        if(Yii::$app->request->isPost)
+        {
+            if($model->load(Yii::$app->request->post()))
+            {
+                $model->ts = time();
+                $template_project_id = -1;
+                if(isset(Yii::$app->request->post()['template'])) 
+                    $template_project_id = Yii::$app->request->post()['template'];
+                    
+                if($model->save())
+                {
+                    // add centers
+                    $center_pId = \app\models\PcExchanges::find()->select('project_id')->where(['abbr'=>'ES'])->one();
+                    $center_pId = $center_pId->project_id;
+                    $centers = \app\models\PcExchanges::find()->where(['type'=>2, 'project_id'=>$center_pId])->all();
+                    foreach($centers as $cen)
+                    {
+                        $m = new \app\models\PcExchanges();
+                        $m->project_id = $model->id;
+                        $m->area = $cen->area;
+                        $m->name = $cen->name;
+                        $m->abbr = $cen->abbr;
+                        $m->type = $cen->type;
+                        $m->address = $cen->address;
+                        $m->done = false;
+                        $m->weight = 0;
+                        $m->save(false);
+                    }
+                    
+                    
+                    if($model->id > 0 && $template_project_id > 0)
+                    {
+                        //operations/attributes & choices
+                        $this->copyAttributes($template_project_id, $model->id);
+
+                        //set project weight
+                        $this->copyProjectWeight($template_project_id, $model->id);
+                        
+                        //users
+                        $this->copyUsers($template_project_id, $model->id);
+                    }
+                    
+                    Yii::$app->session->setFlash('success', 'پروژه جدید با موفقیت اضافه شد.');
+                }
+                else
+//                    return var_dump($model->getErrors());
+                    Yii::$app->session->setFlash('error','افزودن پروژه جدید با خطا مواجه شد.');
+
+                return $this->redirect(['projects/edit_project']);
+            }
+        }
+            
+        $projects = \app\models\PcProjects::find()->select('id, project')->orderBy(['ts'=>SORT_DESC])->all();
+        $templates = [];
+        $templates[-1] = "";
+        foreach($projects as $project)
+        {
+            $templates[$project->id] = $project->project;
+        }
+            
+        return $this->render('new_project', ['model'=>$model, 'projects'=>$templates]);
+    }
+
+    private function copyAttributes($template_project_id, $new_project_id)
+    {
+        /*
+            * @property string $operation
+            * @property int $type_id
+            * @property int $priority
+            * @property int $op_weight
+            * @property int $design_role
+            * @property int $install_role
+            * @property int $test_role
+            * @property int $district_role
+            * @property int $operation_role
+            * @property int $it_role
+            * @property int $planning_role
+        */
+        $templateOperations = \app\models\PcOperations::find()->where(['project_id'=>$template_project_id])->orderBy(['priority'=>SORT_ASC])->all();
+        foreach($templateOperations as $to)
+        {
+            $o = new \app\models\PcOperations();
+            $o->project_id = $new_project_id;
+            
+            $o->operation = $to->operation;
+            $o->type_id = $to->type_id;
+            $o->priority = $to->priority;
+            $o->op_weight = $to->op_weight;
+            $o->design_role = $to->design_role;
+            $o->install_role = $to->install_role;
+            $o->test_role = $to->test_role;
+            $o->district_role = $to->district_role;
+            $o->operation_role = $to->operation_role;
+            $o->it_role = $to->it_role;
+            $o->planning_role = $to->planning_role;
+            $o->save(false);
+            
+            if($o->id > 0)
+                $this->copyChoice($to->id, $o->id);
+        }
+    }
+
+    private function copyProjectWeight($template_project_id, $new_project_id)
+    {
+        $weight = \app\models\PcProjects::find()->select('project_weight')->where(['id'=>$template_project_id])->scalar();
+        $project = \app\models\PcProjects::findOne($new_project_id);
+        $project->project_weight = $weight;
+        $project->update(false);
+    }
+
+    private function copyChoice($template_op_id, $new_op_id)
+    {
+        /*
+        * @property int $id
+        * @property int $op_id
+        * @property string $choice
+        * @property int $choice_weight
+        * @property bool $default
+        */
+        $templateChoices = \app\models\PcChoices::find()->where(['op_id'=>$template_op_id])->all();
+        foreach($templateChoices as $tc)
+        {
+            $model = new \app\models\PcChoices();
+            $model->op_id = $new_op_id;
+            $model->choice = $tc->choice;
+            $model->choice_weight = $tc->choice_weight;
+            $model->default = $tc->default;
+            $model->save(false);
+        }
+    }
+    
+    private function copyUsers($template_project_id, $new_project_id)
+    {
+        /*
+         * @property int $id
+         * @property int $user_id
+         * @property int $project_id
+         * @property int|null $area
+         * @property int|null $exchange_id
+         * @property int $enabled
+         * @property int $rw
+         * @property int $site_editable
+         */ 
+        $templateUsers = \app\models\PcUserProjects::find()->where(['project_id'=>$template_project_id])->orderBy(['id'=>SORT_ASC])->all();
+        foreach($templateUsers as $temUser)
+        {
+            $user = new \app\models\PcUserProjects();
+            $user->user_id = $temUser->user_id;
+            $user->project_id = $new_project_id;
+            $user->area = $temUser->area;
+            $user->enabled = $temUser->enabled;
+            $user->rw = $temUser->rw;
+            $user->site_editable = $temUser->site_editable;
+            //exchange_id
+            if($temUser->exchange_id == null)
+                $user->exchange_id = $temUser->exchange_id;
+            else 
+            {
+                $tem_exchange_id = $temUser->exchange_id;
+                $name = \app\models\PcExchanges::find()->select('name')->where(['id'=>$tem_exchange_id])->scalar();
+                $exch_id = \app\models\PcExchanges::find()->select('id')->where(['project_id'=>$new_project_id, 'name'=>$name])->scalar();
+                $user->exchange_id = $exch_id;
+            }
+
+            $user->save(false);
+        }
+    }
+    
+    
+    
     public function actionEdit_project($id=-1)
     {
         $projects = \app\models\PcProjects::find()->orderBy(['ts'=>SORT_DESC])->asArray()->all();

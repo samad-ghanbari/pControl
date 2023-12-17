@@ -2,6 +2,7 @@
 
 /* @var $this yii\web\View */
 /* @var $model \app\models\PcProjects */
+/* @var $projects \app\models\PcProjects */
 
 use yii\helpers\Html;
 use yii\bootstrap\ActiveForm;
@@ -31,6 +32,17 @@ $this->title = 'PDCP|New Project';
             <?= $form->field($model, 'contract_date', ['labelOptions'=>['style'=>"color:white;"]])->textInput(['placeholder' => "تاریخ قرارداد"]); ?>
             <?= $form->field($model, 'contract_duration', ['labelOptions'=>['style'=>"color:white;"]])->textInput(['placeholder' => "مدت زمان اجرای قرارداد"]); ?>
             <?= $form->field($model, 'enabled', ['labelOptions'=>['style'=>"color:white;"]])->dropDownList(["1"=>"فعال", "0"=>"غیرفعال"]); ?>
+
+            <hr />
+            <div class="form-group">
+                <label for="template" class="text-right col-form-label text-white  ">الگوبرداری از پروژه</label>
+                <div class="p-0">
+                    <?= Html::dropDownList("template",-1,$projects,['id'=>'templateCB', 'required'=>true, 'class'=>"w-100 form-control en-font"]); ?>
+                </div>
+           </div>
+           <br />
+
+
             <div class="form-group">
                 <br/>
                 <br/>

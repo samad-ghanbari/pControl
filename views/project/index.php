@@ -30,6 +30,51 @@ if(isset($sessoin['user']))
     <i class="fa fa-arrow-down" style="position:fixed; left:0px;top:180px; color:#28a4c9; cursor: pointer;" onclick="scDown()"></i>
 
     <div class="layout-wrapper bg-gradient">
+
+    <div class="layout-narrow-panel" id="toolbarPanel" style="padding:5px;">
+                <!--   collapse    -->
+            <button id="collapse-btn" style="border: none; background-color: transparent; width:100%; margin:auto;" title="جمع شدن و باز شدن منو" collapse-val="0" onclick="checkCollapse(this.getAttribute('collapse-val'))">
+                <i class="fa  fa-chevron-circle-right" style="color:white; font-size: 32px;"></i>
+            </button>
+
+            <?php if($rw == 1){ ?>
+                <hr />
+                <p>
+                    <?= Html::a('<i class="fa fa-plus text-white" ></i><span class="dis-text"> آیتم جدید </span>', ['new_record'], ['style'=>'display:block; margin:auto; width:95%;','class'=>'btn btn-success']) ?>
+                </p>
+            <?php } ?>
+
+                 <!-- search-->
+                <div id="searchDiv" style="min-width: 150px;">
+                    <br />
+                    <h5 style="text-align: center;color:white;" >جستجوی آیتم</h5>
+                    <?php $form = ActiveForm::begin(['method'=>"get", 'layout'=>'horizontal', 'options' => ['style' => "direction:rtl;"]]); ?>
+                    <?= Html::hiddenInput('page', 0); ?>
+                    <label for="area-input" style="display: block;color:white;" >منطقه</label>
+                    <?= Html::dropDownList('search[area]',$searchParams['area'], $areaSelection,['style'=>'height:40px;width:95%; margin:0 5px;', 'id'=>'area-input']); ?>
+                    <label for="name-input"  style="display: block; margin-top: 10px;color:white;" >نام مرکز/سایت</label>
+                    <?= Html::textInput('search[name]', $searchParams['name'],['id'=>"name-input",'class'=>"enFont", 'style'=>'height:40px; width:95%; margin:0 5px;']); ?>
+                    <label for="center-input" style="display: block; margin-top: 10px;color:white;" >مرکز اصلی</label>
+                    <?= Html::textInput('search[center_name]', $searchParams['center_name'],['id'=>"center-input", 'style'=>'height:40px; width:95%; margin:0 5px;']); ?>
+                    <label for="site-id-input" style="display: block; margin-top: 10px;color:white;"  >شناسه سایت</label>
+                    <?= Html::textInput('search[site_id]', $searchParams['site_id'],['id'=>"site-id-input",'class'=>"enFont", 'style'=>'height:40px; width:95%; margin:0 5px;']); ?>
+                    <label for="kv-code-input" style="display: block; margin-top: 10px;color:white;" >کد کافو</label>
+                    <?= Html::textInput('search[kv_code]', $searchParams['kv_code'],['id'=>"kv-code-input", 'class'=>"enFont",'style'=>'height:40px; width:95%; margin:0 5px;']); ?>
+                    <label for="phase-input" style="display: block; margin-top: 10px;color:white;" >فاز</label>
+                    <?= Html::dropDownList('search[phaseNo]',$searchParams['phaseNo'], [-1=>'کل فازها', 1=>'1', 2=>'2', 3=>'3', 4=>'4', 5=>'5', 6=>'6', 7=>'7', 8=>'8', 9=>'9', 10=>'10'],['id'=>'phase-input', 'style'=>'height:40px;width:95%;']); ?>
+                    <br style="clear:both;" />
+                    <br />
+                    <button type="submit" class="btn btn-primary" style="height:38px; width:95%;"><i class="fa fa-search text-white" ></i> جستجو </button>
+                    <?php ActiveForm::end(); ?>
+                </div>
+                <br style="clear:both;">
+            <hr />
+            <a href="<?= Yii::$app->request->baseUrl.'/main/home'; ?>" style="display: block; margin:auto; width: 30%; min-width: 32px;">
+            <img style="width:100%;" src="<?= Yii::$app->request->baseUrl.'/web/images/logo.png'; ?>">
+            </a>
+        </div>
+
+        
         <div class="layout-wide-panel">
 
             <div style="width:95%;height:100%; margin:auto;">
@@ -77,52 +122,6 @@ if(isset($sessoin['user']))
                 <br style="clear: both">
                 <br />
             </div>
-        </div>
-
-        <div class="layout-narrow-panel" id="toolbarPanel" style="padding:5px;">
-                <!--   collapse    -->
-            <button id="collapse-btn" style="border: none; background-color: transparent; width:100%; margin:auto;" title="جمع شدن و باز شدن منو" collapse-val="0" onclick="checkCollapse(this.getAttribute('collapse-val'))">
-                <i class="fa  fa-chevron-circle-right" style="color:white; font-size: 32px;"></i>
-            </button>
-
-            <?php if($rw == 1){ ?>
-                <hr />
-                <p>
-                    <?= Html::a('<i class="fa fa-plus text-white" ></i><span class="dis-text"> آیتم جدید </span>', ['new_record'], ['style'=>'display:block; margin:auto; width:95%;','class'=>'btn btn-success']) ?>
-                </p>
-            <?php } ?>
-
-                 <!-- search-->
-                <div id="searchDiv" style="min-width: 150px;">
-                    <br />
-                    <h5 style="text-align: center;color:white;" >جستجوی آیتم</h5>
-                    <?php $form = ActiveForm::begin(['method'=>"get", 'layout'=>'horizontal', 'options' => ['style' => "direction:rtl;"]]); ?>
-                    <?= Html::hiddenInput('page', 0); ?>
-                    <label for="area-input" style="display: block;color:white;" >منطقه</label>
-                    <?= Html::dropDownList('search[area]',$searchParams['area'], $areaSelection,['style'=>'height:40px;width:95%; margin:0 5px;', 'id'=>'area-input']); ?>
-                    <label for="name-input"  style="display: block; margin-top: 10px;color:white;" >نام مرکز/سایت</label>
-                    <?= Html::textInput('search[name]', $searchParams['name'],['id'=>"name-input",'class'=>"enFont", 'style'=>'height:40px; width:95%; margin:0 5px;']); ?>
-                    <label for="center-input" style="display: block; margin-top: 10px;color:white;" >مرکز اصلی</label>
-                    <?= Html::textInput('search[center_name]', $searchParams['center_name'],['id'=>"center-input", 'style'=>'height:40px; width:95%; margin:0 5px;']); ?>
-                    <label for="site-id-input" style="display: block; margin-top: 10px;color:white;"  >شناسه سایت</label>
-                    <?= Html::textInput('search[site_id]', $searchParams['site_id'],['id'=>"site-id-input",'class'=>"enFont", 'style'=>'height:40px; width:95%; margin:0 5px;']); ?>
-                    <label for="kv-code-input" style="display: block; margin-top: 10px;color:white;" >کد کافو</label>
-                    <?= Html::textInput('search[kv_code]', $searchParams['kv_code'],['id'=>"kv-code-input", 'class'=>"enFont",'style'=>'height:40px; width:95%; margin:0 5px;']); ?>
-                    <label for="phase-input" style="display: block; margin-top: 10px;color:white;" >فاز</label>
-                    <?= Html::dropDownList('search[phaseNo]',$searchParams['phaseNo'], [-1=>'کل فازها', 1=>'1', 2=>'2', 3=>'3', 4=>'4', 5=>'5', 6=>'6', 7=>'7', 8=>'8', 9=>'9', 10=>'10'],['id'=>'phase-input', 'style'=>'height:40px;width:95%;']); ?>
-                    <br style="clear:both;" />
-                    <br />
-                    <button type="submit" class="btn btn-primary" style="height:38px; width:95%;"><i class="fa fa-search text-white" ></i> جستجو </button>
-                    <?php ActiveForm::end(); ?>
-                </div>
-
-                <br style="clear:both;">
-            <hr />
-            <a href="<?= Yii::$app->request->baseUrl.'/main/home'; ?>" style="display: block; margin:auto; width: 30%; min-width: 32px;">
-            <img style="width:100%;" src="<?= Yii::$app->request->baseUrl.'/web/images/logo.png'; ?>">
-            </a>
-
-
         </div>
 
     </div>

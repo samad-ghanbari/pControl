@@ -24,6 +24,12 @@ if(isset($project['id'])) $pId = $project['id'];
 ?>
 
 <div class="layout-wrapper bg-gradient">
+
+    <div class="layout-narrow-panel setting-sidebar">
+        <?= \app\components\SidebarWidget::widget(['index'=>2, "projectId"=>$pId]); ?>
+    </div>
+
+
     <div class="layout-wide-panel">
 
         <div style="width:95%; margin:auto;">
@@ -57,7 +63,7 @@ if(isset($project['id'])) $pId = $project['id'];
             ?>
             <div style="width:95%; margin:auto;">
                 <i class="fa fa-cogs fa-2x " style="color:mediumvioletred; display: block; text-align:center; margin:auto;" ></i>
-                <h3 style="text-align: center;color:white;"><?= ' ویژگی های پروژه '.$project['project']; ?></h3>
+                <h3 style="text-align: center;color:white; direction:rtl;"><?= ' ویژگی های پروژه '.$project['project']; ?></h3>
                 <h4 style="text-align: center;color:white;"><?= $project['office']; ?></h4>
 
                 <a href="<?= Yii::$app->request->baseUrl.'/project/update_weight?id='.$project['id']; ?>" style="display:block; background-color:#888;padding:10px; width:200px;margin:auto; border-radius:5px; color:#fff;font-size:18px;text-align:center;" >
@@ -222,9 +228,7 @@ if(isset($project['id'])) $pId = $project['id'];
 
     </div>
 
-    <div class="layout-narrow-panel setting-sidebar">
-        <?= \app\components\SidebarWidget::widget(['index'=>2, "projectId"=>$pId]); ?>
-    </div>
+
 </div>
 
 <!-- context -->
