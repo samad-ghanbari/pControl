@@ -71,7 +71,6 @@ if(isset($sessoin['user']))
                             'dataProvider' => $dataProvider,
                             'filterModel' => $searchModel,
                             'filterRowOptions' =>['style'=>"direction:ltr"],
-                            //        'headerRowOptions'=>['style=>"potision:fixed; top:200px;'],
                             //'summary' => 'نمایش <b>{begin} تا {end}</b> از <b>{totalCount}</b> ',
                             'summary'=>"",
                             //        'pager'=>['options'=>['align'=>"center", 'class'=>"pagination"]],
@@ -86,26 +85,26 @@ if(isset($sessoin['user']))
                                 //1
                                 [
                                     'attribute' =>'project',
-                                    'headerOptions' => ['class' => 'bg-success text-center'],
-                                    'contentOptions' => ['class' => 'text-center', 'style'=>"vertical-align: middle;min-width:150px;", 'title'=>'پروژه'],
+                                    'headerOptions' => ['class' => 'bg-success text-center', 'style'=>'height:80px; line-height:80px;'],
+                                    'contentOptions' => ['class' => 'text-center text-success', 'style'=>"vertical-align: middle;min-width:150px;font-size:16px;", 'title'=>'پروژه'],
                                 ],
                                 //3
                                 [
                                     'attribute' =>'office',
-                                    'headerOptions' => ['class' => 'bg-success text-center'],
+                                    'headerOptions' => ['class' => 'bg-success text-center', 'style'=>'height:80px; line-height:80px;'],
                                     'contentOptions' => ['class' => 'text-center', 'style'=>"vertical-align: middle;min-width:80px;", 'title'=>'اداره کل'],
                                 ],
                                 //۴
                                 [
                                     'attribute' =>'ts',
-                                    'headerOptions' => ['class' => 'bg-success text-center'],
+                                    'headerOptions' => ['class' => 'bg-success text-center', 'style'=>'height:80px; line-height:80px;'],
                                     'contentOptions' => ['class' => 'text-center', 'style'=>"vertical-align: middle;min-width:80px;", 'title'=>'زمان'],
                                     'visible'=>0,
                                 ],
                                 //8
                                 [
                                     'attribute' =>'project_weight',
-                                    'headerOptions' => ['class' => 'bg-success text-center'],
+                                    'headerOptions' => ['class' => 'bg-success text-center', 'style'=>'height:80px; line-height:80px;'],
                                     'contentOptions' => ['class' => 'text-center', 'style'=>"vertical-align: middle;min-width:80px;", 'title'=>'وزن پروژه'],
                                     'visible'=>0
                                 ],
@@ -113,24 +112,24 @@ if(isset($sessoin['user']))
                                 
                                 [
                                     'attribute' =>'contract_subject',
-                                    'headerOptions' => ['class' => 'bg-success text-center'],
+                                    'headerOptions' => ['class' => 'bg-success text-center', 'style'=>'height:80px; line-height:80px;'],
                                     'contentOptions' => ['class' => 'text-center', 'style'=>"vertical-align: middle;min-width:80px;", 'title'=>'موضوع قرارداد'],
                                 ],
                                 [
                                     'attribute' =>'contract_company',
-                                    'headerOptions' => ['class' => 'bg-success text-center'],
+                                    'headerOptions' => ['class' => 'bg-success text-center', 'style'=>'height:80px; line-height:80px;'],
                                     'contentOptions' => ['class' => 'text-center', 'style'=>"vertical-align: middle;min-width:80px;", 'title'=>'شرکت طرف قرارداد'],
                                 ],
                                 [
                                     'attribute' =>'contract_date',
-                                    'headerOptions' => ['class' => 'bg-success text-center'],
+                                    'headerOptions' => ['class' => 'bg-success text-center', 'style'=>'height:80px; line-height:80px;'],
                                     'contentOptions' => ['class' => 'text-center', 'style'=>"vertical-align: middle;min-width:80px;", 'title'=>'تاریخ عقد قرارداد'],
                                 ],
                                 [
                                     'class' => 'yii\grid\ActionColumn',
                                     'template' => '{project_detail}',
                                     'header'=>"پارامترهای پروژه",
-                                    'headerOptions' => ['class' => 'bg-success text-center text-info'],
+                                    'headerOptions' => ['class' => 'bg-success text-center text-info', 'style'=>'height:80px; line-height:80px;'],
                                     'buttons' => ['project_detail' => function($url, $model, $key){ return "<a href=\"$url\"><i class='fa fa-info-circle text-info'></i></a>";}],
                                     'urlCreator' => function ($action, $model, $key, $index)
                                         {
@@ -159,8 +158,8 @@ $script =<<< JS
 
 function activateRow(rowId)
 {
-    $(".selectedRow").removeClass("selectedRow");
-    $("#"+rowId).addClass("selectedRow");
+    $(".selectedRowHome").removeClass("selectedRowHome");
+    $("#"+rowId).addClass("selectedRowHome");
 }
 
 function showProject(id)

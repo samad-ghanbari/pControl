@@ -61,7 +61,7 @@ AppAsset::register($this);
             'items' => [
 //                ['visible'=>$projectFlag, 'label' => "تاریخچه تغییرات <i class='fa fa-history text-primary'></i>", 'encode' => false, 'url' => '/main/log'],
 
-                ['label' => " <i class='fa fa-home text-white'></i>"." صفحه اصلی ", 'encode' => false, 'url' => '/main/home', 'active'=>in_array(\Yii::$app->controller->id, ['main', 'project'])],
+                ['label' => " <i class='fa fa-home text-white'></i>"." صفحه اصلی ", 'encode' => false, 'url' => '/main/home', 'active'=>in_array(\Yii::$app->controller->action->id, ['home'])],
 //                ['visible'=>$adminFlag, 'label' => " کاربران <i class='fa fa-users text-primary'></i>", 'encode' => false, 'url' => '/main/users', 'active'=>in_array(\Yii::$app->controller->action->id, ['users'])],
                 ['visible'=>$adminFlag, 'label' => "  <i class='fas fa-cogs text-white'></i>"." تنظیمات ", 'encode' => false, 'url' => '/projects/edit_project', 'active'=>in_array(\Yii::$app->controller->id, ['projects'])],
 //                ['visible'=>$projectFlag, 'label' => " جزییات پروژه <i class='fas fa-table text-primary'></i>", 'encode' => false, 'url' => '/project/index', 'active'=>in_array(\Yii::$app->controller->id, ['project'])],
@@ -84,6 +84,9 @@ AppAsset::register($this);
 
                     ]
                 ],
+
+                ['label' => " <i class='fa fa-bell text-white'></i>"." اعلانات ", 'encode' => false, 'url' => '/main/notifications',  'active'=>in_array(\Yii::$app->controller->action->id, ['notifications'])],
+
 //                ['visible'=>true, 'encode'=>false,'label' =>"  <i class='fa fa-file-excel text-white'></i>"." گزارشات " , 'active'=>in_array(\Yii::$app->controller->id, ['report']),
 //                    'items'=>[
 //                        ['encode'=>false, 'label'=>"<img style='width:32px;height:auto; display:block; margin:auto;' src='".Yii::$app->request->baseUrl.'/web/images/excel.png'."'>"],
