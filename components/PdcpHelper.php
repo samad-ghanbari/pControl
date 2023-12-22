@@ -64,6 +64,22 @@ class PdcpHelper extends Component
         $session['userProjects'] = $array;
     }
 
+    public static function setUserProjectOwnerSession()
+    {
+        $session = Yii::$app->session;
+        $session->open();
+        $id = -1;
+        if(isset($session['user']))
+            $id = $session['user']['id'];
+        
+        $owner = \app\models\PcProjectOwner::find()->where(['user_id'=>$id])->asArray()->all();
+        $array = [];
+        foreach ($owner as $po)
+            array_push($array, $po['project_id']);
+        
+        $session['owner'] = $array;
+    }
+
     public static function setUserSession()
     {
         $session = Yii::$app->session;

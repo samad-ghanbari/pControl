@@ -324,7 +324,8 @@ class ProjectsController extends \yii\web\Controller
         {
             $post = Yii::$app->request->post();
             $action = $post['btnAction'];
-            if($post['pId'] > -1)
+            $pId = $post['pId'];
+            if($pId > -1)
             {
                 if($action == 'add')
                     return $this->add_equipment($post);
@@ -685,7 +686,7 @@ class ProjectsController extends \yii\web\Controller
                     if($model->update())
                         return $this->redirect(['projects/edit_project', 'id'=>$model->project_id]);
                     else
-//                    return var_dump($model->getErrors());
+                      //                    return var_dump($model->getErrors());
                         Yii::$app->session->setFlash("error", "ویرایش LOM با خطا مواجه گردید.");
                 }
             }
@@ -700,9 +701,9 @@ class ProjectsController extends \yii\web\Controller
                 else
                     Yii::$app->session->setFlash("error", "حذف تجهیز با خطا مواجه شد.");
             }
-
+            
         }
-
+        
         if($id > -1)
         {
             $model = \app\models\PcLom::findOne($id);

@@ -126,16 +126,17 @@ class MainController extends Controller
                 {
                     $session = Yii::$app->session;
                     $session->open();
-
+                    
                     if (isset($session['user']))
                         $session->remove("user");
-
+                    
                     $user['password'] = "";
                     unset($user['password']);
                     $session['user'] = $user;
-
+                    
                     (new \app\components\PdcpHelper)->setUserProjectSession();
-
+                    (new \app\components\PdcpHelper)->setUserProjectOwnerSession();
+                    
                     if($user['admin'])
                     {
                         $newTicket = \app\models\PcTickets::find()->select("COUNT(*)")->where(['read'=>false])->scalar();
@@ -150,7 +151,7 @@ class MainController extends Controller
                     }
                     return $this->redirect(['main/home']);
                 }
-
+                
                 Yii::$app->session->setFlash('error', "نام کاربری یا رمز عبور اشتباه است");
                 $model->password = NULL;
             }
@@ -198,7 +199,7 @@ class MainController extends Controller
             {
                 return $this->redirect(['main/reset_password']);
             }
-
+            
             if($user['admin'] == 1)
                 $userProjects = \app\models\PcViewUserProjects::find()->select('project_id, project, office, ts, project_weight, contract_subject, contract_company, contract_date, contract_duration')->distinct()->where(['enabled'=>1, 'project_enabled'=>true])->orderBy(['ts'=>SORT_DESC])->asArray()->all();
             else

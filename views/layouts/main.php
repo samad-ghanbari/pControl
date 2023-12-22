@@ -7,7 +7,21 @@
 $session = Yii::$app->session;
 $session->open();
 $adminFlag = 0;
-if(isset($session['user'])) $adminFlag = $session['user']['admin'];
+$ownerFlag = false;
+$project_owner=[];
+if(isset($session['user'])) 
+    $adminFlag = $session['user']['admin'];
+
+if(isset($session['owner'])) 
+{
+    $project_owner = $session['owner'];
+    if(sizeof($project_owner) > 0)
+        $ownerFlag = true;
+}
+
+if($ownerFlag == true && $adminFlag == 1)
+    $ownerFlag = false;
+
 $projectFlag = 0;
 $projectName = '';
 $officeName = '';
@@ -64,6 +78,7 @@ AppAsset::register($this);
                 ['label' => " <i class='fa fa-home text-white'></i>"." صفحه اصلی ", 'encode' => false, 'url' => '/main/home', 'active'=>in_array(\Yii::$app->controller->action->id, ['home'])],
 //                ['visible'=>$adminFlag, 'label' => " کاربران <i class='fa fa-users text-primary'></i>", 'encode' => false, 'url' => '/main/users', 'active'=>in_array(\Yii::$app->controller->action->id, ['users'])],
                 ['visible'=>$adminFlag, 'label' => "  <i class='fas fa-cogs text-white'></i>"." تنظیمات ", 'encode' => false, 'url' => '/projects/edit_project', 'active'=>in_array(\Yii::$app->controller->id, ['projects'])],
+                ['visible'=>$ownerFlag, 'label' => "  <i class='fas fa-cogs text-white'></i>"." تنظیمات پروژه ", 'encode' => false, 'url' => '/owner/edit_project', 'active'=>in_array(\Yii::$app->controller->id, ['owner'])],
 //                ['visible'=>$projectFlag, 'label' => " جزییات پروژه <i class='fas fa-table text-primary'></i>", 'encode' => false, 'url' => '/project/index', 'active'=>in_array(\Yii::$app->controller->id, ['project'])],
                 ['visible'=>true, 'encode'=>false,'label' =>"  <i class='fa fa-chart-pie text-white'></i>"." آمار پروژه " , 'active'=>in_array(\Yii::$app->controller->id, ['stat']),
                     'items'=>[
