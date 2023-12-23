@@ -114,7 +114,7 @@ if(isset($project['id'])) $pId = $project['id'];
                     <div style="display: flex; flex-wrap: wrap; justify-items: center;">
                         <?php
                         foreach ($lom as $LOM)
-                            echo \app\components\LomWidget::widget(["model"=>$LOM, 'area'=>-1, 'edit'=>true]);
+                            echo \app\components\LomWidget::widget(["model"=>$LOM, 'area'=>-1, 'edit'=>true, 'admin'=>true]);
                         ?>
                     </div>
 

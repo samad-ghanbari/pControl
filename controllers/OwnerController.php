@@ -490,6 +490,7 @@ class OwnerController extends \yii\web\Controller
             return $this->redirect(['owner/edit_project']);
     }
 
+    // users
     public function actionProject_users($id = -1)
     {
         $projects = \app\models\PcProjects::find()->orderBy(['ts'=>SORT_DESC])->asArray()->all();
@@ -646,6 +647,94 @@ class OwnerController extends \yii\web\Controller
             $exchanges = $array;
 
             return $this->render('new_user', ['project'=>$project,'model'=>$model, 'users'=>$users, 'projects'=>$projects, 'areas'=>$areas, 'exchanges'=>$exchanges]);
+        }
+
+        return $this->redirect(['owner/index']);
+    }
+
+    public function actionEdit_user_project($id = -1)
+    {
+        $session = Yii::$app->session;
+        $session->open();
+        
+        if(isset($session['project']))
+        {
+            $project = $session['project'];
+            $model = \app\models\PcUserProjects::findOne($id);
+            $view = \app\models\PcViewUserProjects::findOne($id);
+            if(Yii::$app->request->isPost)
+            {
+                if($model->load(Yii::$app->request->post()))
+                {
+                    if($model->area == -1)
+                    {
+                        $model->area = null;
+                        $model->exchange_id = null;
+                    }
+
+                    if($model->exchange_id == -1) $model->exchange_id = null;
+
+                    if($model->update())
+                    {
+                        \app\components\PdcpHelper::setUserProjectSession();
+                        Yii::$app->session->setFlash('success', 'عملیات با موفقیت انجام شد.');
+                    }
+                    else
+                        Yii::$app->session->setFlash('error', 'ذخیره اطلاعات با خطا مواجه شد.');
+                }
+                else
+                    Yii::$app->session->setFlash('error', 'دریافت اطلاعات با خطا مواجه شد.');
+
+                return $this->redirect(['owner/project_users?id='.$project['id']]);
+            }
+
+            $user = $view->name . ' '. $view->lastname.' ['.$view->office.']';
+            if($model->area == null) $model->area = -1;
+            if($model->exchange_id == null) $model->exchange_id = -1;
+
+            $areas = [-1=>"تمام مناطق", 2=>'2', 3=>'3', 4=>'4', 5=>'5', 6=>'6', 7=>'7', 8=>'8'];
+            $exchanges = \app\models\PcExchanges::find()->select('id,area, name')->where(['project_id'=>$project['id'], 'type'=>2])->orderBy('area, name')->asArray()->all();
+            $array=[];
+            $array = [2=>['-1'=>'تمام مراکز'], 3=>['-1'=>'تمام مراکز'], 4=>['-1'=>'تمام مراکز'], 5=>['-1'=>'تمام مراکز'], 6=>['-1'=>'تمام مراکز'], 7=>['-1'=>'تمام مراکز'], 8=>['-1'=>'تمام مراکز']];
+            foreach ($exchanges as $e)
+            {
+                $array[$e['area']][$e['id']] = $e['name'];
+            }
+            $exchanges = $array;
+
+            $projectName = $view->project;
+            return $this->render('edit_user_project', ['project'=>$project,'projectName'=>$projectName, 'model'=>$model, 'user'=>$user, 'areas'=>$areas, 'exchanges'=>$exchanges]);
+        }
+
+        return $this->redirect(['owner/index']);
+    }
+
+    public function actionRemove_user_project($id = -1)
+    {
+        $session = Yii::$app->session;
+        $session->open();
+
+        if(isset($session['project']))
+        {
+            $project = $session['project'];
+            if(Yii::$app->request->isPost)
+            {
+                $id = Yii::$app->request->post()['PcViewUserProjects']['id'];
+                $model = \app\models\PcUserProjects::findOne($id);
+
+                if($model->delete())
+                {
+                    \app\components\PdcpHelper::setUserProjectSession();
+                    Yii::$app->session->setFlash('success', 'عملیات با موفقیت انجام شد.');
+                }
+                else
+                    Yii::$app->session->setFlash('error', 'عملیات با خطا انجام شد.');
+
+                return $this->redirect(['owner/project_users?id='.$project['id']]);
+            }
+
+            $view = \app\models\PcViewUserProjects::findOne($id);
+            return $this->render('remove_user_project', ['model'=>$view]);
         }
 
         return $this->redirect(['owner/index']);

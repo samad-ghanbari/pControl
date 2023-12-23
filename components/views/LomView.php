@@ -4,7 +4,11 @@ use yii\helpers\Url;
 /* @var $area */
 /* @var $edit */
 
-$url = Yii::$app->request->baseUrl."/projects/edit_lom?id=";
+if($admin)
+    $url = Yii::$app->request->baseUrl."/projects/edit_lom?id=";
+else
+    $url = Yii::$app->request->baseUrl."/owner/edit_lom?id=";
+
 $left = $model['quantity'] - ($model['area2']+$model['area3']+$model['area4']+$model['area5']+$model['area6']+$model['area7']+$model['area8']);
 
 ?>
