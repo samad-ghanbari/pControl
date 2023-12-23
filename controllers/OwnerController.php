@@ -102,6 +102,14 @@ class OwnerController extends \yii\web\Controller
             $post = Yii::$app->request->post();
             $action = $post['btnAction'];
             $pId = $post['pId'] ;
+
+            $session = Yii::$app->session;
+            $session->open();
+            $projects = $session['owner'];
+            if(!in_array($pId, $projects))
+                $pId = -1;
+            
+            
             if( $pId > -1 )
             {
                 if($action == 'add')
@@ -113,10 +121,16 @@ class OwnerController extends \yii\web\Controller
         return $this->redirect(['owner/edit_project']);
     }
 
-
     private function add_equipment($post)
     {
         $pId = $post['pId'];
+
+        $session = Yii::$app->session;
+        $session->open();
+        $projects = $session['owner'];
+        if(!in_array($pId, $projects))
+            $pId = -1;
+        
         $project = \app\models\PcProjects::findOne($pId);
         $model = new \app\models\PcLom();
         $model->project_id = $pId;
@@ -135,6 +149,13 @@ class OwnerController extends \yii\web\Controller
         {
             $post = Yii::$app->request->post();
             $project_id = $post['project-id'];
+
+            $session = Yii::$app->session;
+            $session->open();
+            $projects = $session['owner'];
+            if(!in_array($project_id, $projects))
+                $project_id = -1;
+
             $fileName = $_FILES['file-upload']['name'];
             $fileName = strtolower($fileName);
             if(str_ends_with($fileName,".xls"))
@@ -493,7 +514,13 @@ class OwnerController extends \yii\web\Controller
     // users
     public function actionProject_users($id = -1)
     {
-        $projects = \app\models\PcProjects::find()->orderBy(['ts'=>SORT_DESC])->asArray()->all();
+        $session = Yii::$app->session;
+        $session->open();
+        $projects = $session['owner'];
+        if(!in_array($id, $projects))
+            $id = -1;
+
+        $projects = \app\models\PcProjects::find()->where(['id'=>$projects])->orderBy(['ts'=>SORT_DESC])->asArray()->all();
 
         if($id > -1)
         {
@@ -590,6 +617,11 @@ class OwnerController extends \yii\web\Controller
         if(isset($session['project']))
         {
             $project = $session['project'];
+            $projects_id = $session['owner'];
+            if(!in_array($project['id'], $projects_id))
+                return $this->redirect(['owner/edit_project']);
+
+            
             $model = new \app\models\PcUserProjects();
             if(Yii::$app->request->isPost)
             {
@@ -660,7 +692,13 @@ class OwnerController extends \yii\web\Controller
         if(isset($session['project']))
         {
             $project = $session['project'];
+            $projects_id = $session['owner'];
+
+            
             $model = \app\models\PcUserProjects::findOne($id);
+            if(!in_array($model->project_id, $projects_id))
+                return $this->redirect(['owner/edit_project']);
+
             $view = \app\models\PcViewUserProjects::findOne($id);
             if(Yii::$app->request->isPost)
             {
@@ -706,38 +744,46 @@ class OwnerController extends \yii\web\Controller
             return $this->render('edit_user_project', ['project'=>$project,'projectName'=>$projectName, 'model'=>$model, 'user'=>$user, 'areas'=>$areas, 'exchanges'=>$exchanges]);
         }
 
-        return $this->redirect(['owner/index']);
+        return $this->redirect(['owner/edit_user_project']);
     }
 
     public function actionRemove_user_project($id = -1)
-    {
+    { 
         $session = Yii::$app->session;
         $session->open();
-
+        
         if(isset($session['project']))
         {
             $project = $session['project'];
+            $projects_id = $session['owner'];            
+            
             if(Yii::$app->request->isPost)
             {
                 $id = Yii::$app->request->post()['PcViewUserProjects']['id'];
                 $model = \app\models\PcUserProjects::findOne($id);
-
-                if($model->delete())
-                {
-                    \app\components\PdcpHelper::setUserProjectSession();
-                    Yii::$app->session->setFlash('success', 'عملیات با موفقیت انجام شد.');
-                }
+                if(!in_array($model->project_id, $projects_id))
+                    return $this->redirect(['owner/edit_project']);
                 else
-                    Yii::$app->session->setFlash('error', 'عملیات با خطا انجام شد.');
-
+                {
+                    if($model->delete())
+                    {
+                        \app\components\PdcpHelper::setUserProjectSession();
+                        Yii::$app->session->setFlash('success', 'عملیات با موفقیت انجام شد.');
+                    }
+                    else
+                        Yii::$app->session->setFlash('error', 'عملیات با خطا انجام شد.');
+                }
+                
                 return $this->redirect(['owner/project_users?id='.$project['id']]);
             }
-
+            
             $view = \app\models\PcViewUserProjects::findOne($id);
+            if(!in_array($view->project_id, $projects_id))
+                 return $this->redirect(['owner/edit_project']);
             return $this->render('remove_user_project', ['model'=>$view]);
         }
-
-        return $this->redirect(['owner/index']);
+        
+        return $this->redirect(['owner/edit_user_project']);
     }
 
 
