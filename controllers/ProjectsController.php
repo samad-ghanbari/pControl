@@ -1675,4 +1675,146 @@ class ProjectsController extends \yii\web\Controller
         return $this->redirect(['main/logout']);
     }
 
+    public function actionProject_owner($id = -1)
+    {
+        $projects = \app\models\PcProjects::find()->orderBy(['ts'=>SORT_DESC])->asArray()->all();
+
+        if($id > -1)
+        {
+            $project = \app\models\PcProjects::find()->where(['id'=>$id])->asArray()->one();
+            $session = Yii::$app->session;
+            $session->open();
+            if(isset($session['project'])) $session->remove('project');
+            $session['project'] = $project;
+
+            //owners
+            $ownerSM = new \app\models\PcViewProjectOwnerSearch();
+            $params = Yii::$app->request->queryParams;
+
+            if (isset($params['PcViewProjectOwnerSearch']))
+            {
+                $params['PcViewProjectOwnerSearch']['project_id'] = $id;
+                $usersDP = $ownerSM->search($params);
+            }
+            else
+            {
+                $qry = \app\models\PcViewProjectOwner::find()->where(['project_id'=>$id])->orderBy("office,lastname, name");
+                $ownerDP = new \yii\data\ActiveDataProvider(['query' => $qry]);
+
+            }
+            $ownerDP->pagination->pageSize = 10;
+            $ownerDP->setSort(['defaultOrder' => ['office'=>SORT_ASC]]);
+
+            return $this->render('project_owner', ['project'=>$project, 'projects'=>$projects, 'ownerSM'=>$ownerSM, 'ownerDP'=>$ownerDP]);
+
+        }
+        else
+        {
+            return $this->render('project_owner', ['project'=>"",'projects'=>$projects, 'usersSM'=>"", 'usersDP'=>""]);
+        }
+    }
+
+    public function actionAdd_owner()
+    { return 1;
+        $session = Yii::$app->session;
+        $session->open();
+
+        if(isset($session['project']))
+        {
+            $project = $session['project'];
+            $model = new \app\models\PcUserProjects();
+            if(Yii::$app->request->isPost)
+            {
+                if($model->load(Yii::$app->request->post()))
+                {
+                    $model->project_id = $project['id'];
+                    if($model->area == -1)
+                    {
+                        $model->area = null;
+                        $model->exchange_id = null;
+                    }
+
+                    if($model->exchange_id == -1) $model->exchange_id = null;
+                    $model->enabled = 1;
+
+                    if($model->save())
+                    {
+                        \app\components\PdcpHelper::setUserProjectSession();
+                        Yii::$app->session->setFlash('success', 'عملیات با موفقیت انجام شد.');
+                    }
+                    else
+                        Yii::$app->session->setFlash('error', 'ذخیره اطلاعات با خطا مواجه شد.');
+                }
+                else
+                    Yii::$app->session->setFlash('error', 'دریافت اطلاعات با خطا مواجه شد.');
+
+                return $this->redirect(['projects/project_users?id='.$project['id']]);
+            }
+
+            $users = \app\models\PcUsers::find()->select('id, name, lastname, office')->orderBy('office, lastname, name')->asArray()->all();
+            $array=[];
+            //['cat1'=>[id1=>"samad"], 'cat2'=>[id2=>"you"]]
+            foreach($users as $u)
+            {
+                $array[$u['office']][$u['id']] = $u['name'].' '.$u['lastname'];
+            }
+            $users = $array;
+
+            $projects = \app\models\PcProjects::find()->orderBy('ts, project')->asArray()->all();
+            $array = [];
+            foreach($projects as $p)
+            {
+                $array[$p['id']] = $p['project'].' ['.$p['office'].']';
+            }
+            $projects = $array;
+
+            $areas = [-1=>"تمام مناطق", 2=>'2', 3=>'3', 4=>'4', 5=>'5', 6=>'6', 7=>'7', 8=>'8'];
+            $exchanges = \app\models\PcExchanges::find()->select('id,area, name')->where(['project_id'=>$project['id'], 'type'=>2])->orderBy('area, name')->asArray()->all();
+            $array=[];
+            $array = [2=>['-1'=>'تمام مراکز'], 3=>['-1'=>'تمام مراکز'], 4=>['-1'=>'تمام مراکز'], 5=>['-1'=>'تمام مراکز'], 6=>['-1'=>'تمام مراکز'], 7=>['-1'=>'تمام مراکز'], 8=>['-1'=>'تمام مراکز']];
+            foreach ($exchanges as $e)
+            {
+                $array[$e['area']][$e['id']] = $e['name'];
+            }
+            $exchanges = $array;
+
+            return $this->render('new_user', ['project'=>$project,'model'=>$model, 'users'=>$users, 'projects'=>$projects, 'areas'=>$areas, 'exchanges'=>$exchanges]);
+        }
+
+        return $this->redirect(['projects/index']);
+    }
+
+    public function actionRemove_owner($id = -1)
+    { return 2;
+        $session = Yii::$app->session;
+        $session->open();
+
+        if(isset($session['project']))
+        {
+            $project = $session['project'];
+            if(Yii::$app->request->isPost)
+            {
+                $id = Yii::$app->request->post()['PcViewUserProjects']['id'];
+                $model = \app\models\PcUserProjects::findOne($id);
+
+                if($model->delete())
+                {
+                    \app\components\PdcpHelper::setUserProjectSession();
+                    Yii::$app->session->setFlash('success', 'عملیات با موفقیت انجام شد.');
+                }
+                else
+                    Yii::$app->session->setFlash('error', 'عملیات با خطا انجام شد.');
+
+                return $this->redirect(['projects/project_users?id='.$project['id']]);
+            }
+
+            $view = \app\models\PcViewUserProjects::findOne($id);
+            return $this->render('remove_user_project', ['model'=>$view]);
+        }
+
+        return $this->redirect(['projects/index']);
+    }
+
+
+
 }

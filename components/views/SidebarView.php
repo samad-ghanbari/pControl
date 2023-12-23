@@ -25,6 +25,10 @@
         <a style="display:block;" href="<?= Yii::$app->request->baseurl.'/projects/project_users?id='.$projectId; ?>" ><span class="disappear-text"> کاربران پروژه </span><i class='fas fa-users' style="color:white;"></i></a>
     </li>
 
+    <li class="<?php if($index==6) echo 'active'; ?>"  title=" مسئول پروژه ">
+        <a style="display:block;" href="<?= Yii::$app->request->baseurl.'/projects/project_owner?id='.$projectId; ?>" ><span class="disappear-text"> مسئول پروژه </span><i class='fas fa-users' style="color:white;"></i></a>
+    </li>
+
     <li class="<?php if($index==5) echo 'active'; ?>" title=" حذف پروژه ">
         <a style="display:block;" href="<?= Yii::$app->request->baseurl.'/projects/remove_project?id='.$projectId; ?>" ><span class="disappear-text"> حذف پروژه </span><i class='fa fa-times' style="color:white;"></i></a>
     </li>
