@@ -606,7 +606,7 @@ class OwnerController extends \yii\web\Controller
             return $this->render('site_edit', ['project'=>$project,'model'=>$model, 'areas'=>$areas]);
         }
 
-        return $this->redirect(['owner/index']);
+        return $this->redirect(['owner/project_users']);
     }
 
     public function actionNew_user()
@@ -681,7 +681,7 @@ class OwnerController extends \yii\web\Controller
             return $this->render('new_user', ['project'=>$project,'model'=>$model, 'users'=>$users, 'projects'=>$projects, 'areas'=>$areas, 'exchanges'=>$exchanges]);
         }
 
-        return $this->redirect(['owner/index']);
+        return $this->redirect(['owner/project_users']);
     }
 
     public function actionEdit_user_project($id = -1)

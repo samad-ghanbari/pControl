@@ -163,7 +163,7 @@ AppAsset::register($this);
                 <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
                 <?= Yii::$app->session->getFlash('success') ?>
             </div>
-            <br/>
+
         <?php endif; ?>
         <!-- display error message -->
         <?php if (Yii::$app->session->hasFlash('error')): ?>
@@ -171,7 +171,7 @@ AppAsset::register($this);
                 <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
                 <?= Yii::$app->session->getFlash('error') ?>
             </div>
-            <br/>
+      
         <?php endif; ?>
         <!--   ticket     -->
         <div class="ticket-div">

@@ -42,8 +42,8 @@ class PcProjectOwner extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'user_id' => 'User ID',
-            'project_id' => 'Project ID',
+            'user_id' => 'کاربر',
+            'project_id' => 'پروژه',
         ];
     }
 }

@@ -74,7 +74,7 @@ class ProjectsController extends \yii\web\Controller
                     Yii::$app->session->setFlash('success', 'پروژه جدید با موفقیت اضافه شد.');
                 }
                 else
-//                    return var_dump($model->getErrors());
+                //                    return var_dump($model->getErrors());
                     Yii::$app->session->setFlash('error','افزودن پروژه جدید با خطا مواجه شد.');
 
                 return $this->redirect(['projects/edit_project']);
@@ -136,9 +136,9 @@ class ProjectsController extends \yii\web\Controller
                     Yii::$app->session->setFlash('success', 'پروژه جدید با موفقیت اضافه شد.');
                 }
                 else
-//                    return var_dump($model->getErrors());
+                //                    return var_dump($model->getErrors());
                     Yii::$app->session->setFlash('error','افزودن پروژه جدید با خطا مواجه شد.');
-
+                
                 return $this->redirect(['projects/edit_project']);
             }
         }
@@ -257,9 +257,7 @@ class ProjectsController extends \yii\web\Controller
 
             $user->save(false);
         }
-    }
-    
-    
+    }   
     
     public function actionEdit_project($id=-1)
     {
@@ -345,7 +343,7 @@ class ProjectsController extends \yii\web\Controller
         return $this->render("add_equip", ['project'=>$project, 'model'=>$model]);
     }
 
-    //---------------------
+     //---------------------
     public function actionLom_template()
     {
         $path = getcwd();
@@ -632,7 +630,7 @@ class ProjectsController extends \yii\web\Controller
         else
             return false;
     }
-//---------------------
+      //---------------------
 
     public function actionAdd_lom()
     {
@@ -1715,28 +1713,19 @@ class ProjectsController extends \yii\web\Controller
     }
 
     public function actionAdd_owner()
-    { return 1;
+    {
         $session = Yii::$app->session;
         $session->open();
 
         if(isset($session['project']))
         {
             $project = $session['project'];
-            $model = new \app\models\PcUserProjects();
+            $model = new \app\models\PcProjectOwner();
             if(Yii::$app->request->isPost)
             {
                 if($model->load(Yii::$app->request->post()))
                 {
                     $model->project_id = $project['id'];
-                    if($model->area == -1)
-                    {
-                        $model->area = null;
-                        $model->exchange_id = null;
-                    }
-
-                    if($model->exchange_id == -1) $model->exchange_id = null;
-                    $model->enabled = 1;
-
                     if($model->save())
                     {
                         \app\components\PdcpHelper::setUserProjectSession();
@@ -1747,8 +1736,8 @@ class ProjectsController extends \yii\web\Controller
                 }
                 else
                     Yii::$app->session->setFlash('error', 'دریافت اطلاعات با خطا مواجه شد.');
-
-                return $this->redirect(['projects/project_users?id='.$project['id']]);
+                    
+                return $this->redirect(['projects/project_owner?id='.$project['id']]);
             }
 
             $users = \app\models\PcUsers::find()->select('id, name, lastname, office')->orderBy('office, lastname, name')->asArray()->all();
@@ -1768,24 +1757,15 @@ class ProjectsController extends \yii\web\Controller
             }
             $projects = $array;
 
-            $areas = [-1=>"تمام مناطق", 2=>'2', 3=>'3', 4=>'4', 5=>'5', 6=>'6', 7=>'7', 8=>'8'];
-            $exchanges = \app\models\PcExchanges::find()->select('id,area, name')->where(['project_id'=>$project['id'], 'type'=>2])->orderBy('area, name')->asArray()->all();
-            $array=[];
-            $array = [2=>['-1'=>'تمام مراکز'], 3=>['-1'=>'تمام مراکز'], 4=>['-1'=>'تمام مراکز'], 5=>['-1'=>'تمام مراکز'], 6=>['-1'=>'تمام مراکز'], 7=>['-1'=>'تمام مراکز'], 8=>['-1'=>'تمام مراکز']];
-            foreach ($exchanges as $e)
-            {
-                $array[$e['area']][$e['id']] = $e['name'];
-            }
-            $exchanges = $array;
 
-            return $this->render('new_user', ['project'=>$project,'model'=>$model, 'users'=>$users, 'projects'=>$projects, 'areas'=>$areas, 'exchanges'=>$exchanges]);
+            return $this->render('new_owner', ['project'=>$project,'model'=>$model, 'users'=>$users, 'projects'=>$projects]);
         }
 
         return $this->redirect(['projects/index']);
     }
 
     public function actionRemove_owner($id = -1)
-    { return 2;
+    {
         $session = Yii::$app->session;
         $session->open();
 
@@ -1794,8 +1774,8 @@ class ProjectsController extends \yii\web\Controller
             $project = $session['project'];
             if(Yii::$app->request->isPost)
             {
-                $id = Yii::$app->request->post()['PcViewUserProjects']['id'];
-                $model = \app\models\PcUserProjects::findOne($id);
+                $id = Yii::$app->request->post()['PcViewProjectOwner']['id'];
+                $model = \app\models\PcProjectOwner::findOne($id);
 
                 if($model->delete())
                 {
@@ -1805,11 +1785,11 @@ class ProjectsController extends \yii\web\Controller
                 else
                     Yii::$app->session->setFlash('error', 'عملیات با خطا انجام شد.');
 
-                return $this->redirect(['projects/project_users?id='.$project['id']]);
+                return $this->redirect(['projects/project_owner?id='.$project['id']]);
             }
 
-            $view = \app\models\PcViewUserProjects::findOne($id);
-            return $this->render('remove_user_project', ['model'=>$view]);
+            $view = \app\models\PcViewProjectOwner::findOne($id);
+            return $this->render('remove_owner', ['model'=>$view]);
         }
 
         return $this->redirect(['projects/index']);
