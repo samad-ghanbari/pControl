@@ -307,9 +307,8 @@ class MainController extends Controller
                     $model->passwordConfirm = $password;
                     $model->password = $password;
                     $model->reset_password = false;
-                    try
+                    if($model->update(false))
                     {
-                        $model->update();
                         if($user['reset_password'] == true)
                         {
                             $session->remove('user');
@@ -319,7 +318,7 @@ class MainController extends Controller
                         Yii::$app->session->setFlash('success', 'رمز شما با موفقیت تغییر یافت.');
                         return $this->redirect(['main/home']);
                     }
-                    catch (\Exception $e){Yii::$app->session->setFlash('error', 'تغییر رمز با خطا مواجه شد.');}
+                    else {Yii::$app->session->setFlash('error', 'تغییر رمز با خطا مواجه شد.');}
                 }
                 else
                     Yii::$app->session->setFlash('error', 'رمزهای جدید وارد شده با هم تطابق ندارند.');
