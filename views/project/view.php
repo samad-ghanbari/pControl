@@ -68,8 +68,8 @@ else if($weight > 70)
 
         <div style="width:95%; margin:auto; background-color: rgba(100,100,100,0.2); border-radius: 10px;padding:10px; min-height:80vh;" class="box-shadow-dark">
 
-
-            <?php if( (($rw == 1) && ($siteEditable == 1) && ($USER_ROLE == 'design') ) || ($rw && $user['admin']) ){ ?>
+<!-- && ($USER_ROLE == 'design') -->
+            <?php if( (($rw == 1) && ($siteEditable == 1)  ) || ($rw && $user['admin']) ){ ?>
                 <p style="width:80%; margin:auto;">
                     <button class="btn btn-info" onclick="$('#editExchangeOverlay').css('height','100%')" title='ویرایش مرکز / سایت'>ویرایش مرکز / سایت</button>
                 </p>
