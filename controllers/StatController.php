@@ -184,7 +184,7 @@ class StatController extends \yii\web\Controller
                 $color = [];
                 $label = [];
                 $opId = $op['id'];
-//                $opChoices = $choices[$opId]; // [2=>'onu', 3=>'copp' ...]
+                //                $opChoices = $choices[$opId]; // [2=>'onu', 3=>'copp' ...]
                 $opRec = \app\models\PcViewRecords::find()->select("op_value, COUNT(DISTINCT exchange_id) as cnt")->where(['op_id'=>$opId])->andWhere(['in', 'exchange_id',$condex])->groupBy("op_value")->asArray()->all();
                 $color = $this->getGraphColorArray(sizeof($opRec));
                 foreach($opRec as $oR)
@@ -228,113 +228,113 @@ class StatController extends \yii\web\Controller
             $areaSelection = [-1=>'کل مناطق', 2=>'2', 3=>"3", 4=>'4', 5=>'5', 6=>'6', 7=>'7', 8=>'8'];
             $userProjects = $session['userProjects'];
             if(isset($userProjects[$project['id']]))
-            {
-                $ae = $userProjects[$project['id']];
-                $area = $ae['area'];
-                $exchange_id = $ae['exchange_id'];
+                {
+                    $ae = $userProjects[$project['id']];
+                    $area = $ae['area'];
+                    $exchange_id = $ae['exchange_id'];
 
-                $accessLevel=['level'=>-1, 'name'=>''];
-                if(empty($ae['area']) && empty($ae['exchange_id']) )
-                {
-                    $accessLevel['level'] = 1;
-                }
-                else if(($ae['area'] > 0) && empty($ae['exchange_id']))
-                {
-                    $accessLevel['level'] = 2;
-                }
-                else if(($ae['area'] > 0) && ($ae['exchange_id'] > 0))
-                {
-                    $accessLevel['level'] = 3;
-                }
-
-                $exchanges = [];
-                if($accessLevel['level'] == 1)
-                {
-                    $areaSelection = [-1 => 'کل مناطق', 2 => '2', 3 => '3', 4 => '4', 5 => '5', 6 => '6', 7 => '7', 8 => '8'];
-                    $exchanges = \app\models\PcExchanges::find()->select('id, area, name')->where(['project_id' => $project['id'], 'type' => 2])->orderBy('area, name')->asArray()->all();
-                    $array = [-1=>[-1=>'کل مراکز'], 2=>[-1=>"کل مراکز"], 3=>[-1=>"کل مراکز"], 4=>[-1=>"کل مراکز"], 5=>[-1=>"کل مراکز"], 6=>[-1=>"کل مراکز"], 7=>[-1=>"کل مراکز"], 8=>[-1=>"کل مراکز"]];
-                    foreach ($exchanges as $exch)
+                    $accessLevel=['level'=>-1, 'name'=>''];
+                    if(empty($ae['area']) && empty($ae['exchange_id']) )
                     {
-                        $array[$exch['area']][$exch['id']] = $exch['name'];
+                        $accessLevel['level'] = 1;
                     }
-                    $exchanges = $array;
-                }
-                else if($accessLevel['level'] == 2)
-                {
-                    $areaSelection = [$ae['area']=>$ae['area']];
-                    $exchanges = \app\models\PcExchanges::find()->select('id, area, name')->where(['project_id' => $project['id'], 'type' => 2, 'area'=>$ae['area']])->orderBy('area, name')->asArray()->all();
-
-                    $array = [-1=>[-1=>'کل مراکز'], $ae['area']=>[-1=>'کل مراکز']];
-                    foreach ($exchanges as $exch)
+                    else if(($ae['area'] > 0) && empty($ae['exchange_id']))
                     {
-                        $array[$exch['area']][$exch['id']] = $exch['name'];
+                        $accessLevel['level'] = 2;
                     }
-                    $exchanges = $array;
-
-                }
-                else if($accessLevel['level'] == 3)
-                {
-                    $areaSelection = [$ae['area']=>$ae['area']];
-                    $exchanges = \app\models\PcExchanges::find()->select('id, area, name')->where(['project_id' => $project['id'], 'type' => 2, 'id'=>$ae['exchange_id']])->orderBy('area, name')->asArray()->all();
-
-                    $array = [-1=>[-1=>'کل مراکز']];
-                    foreach ($exchanges as $exch)
+                    else if(($ae['area'] > 0) && ($ae['exchange_id'] > 0))
                     {
-                        $array[$exch['area']][$exch['id']] = $exch['name'];
+                        $accessLevel['level'] = 3;
                     }
-                    $exchanges = $array;
-                }
 
-                $searchParams = ['area'=>$area, 'exchange_id'=>$exchange_id, 'phaseNo'=>-1];
-                $params = Yii::$app->request->post();
-                if(isset($params['search']))
-                {
-                    $searchParams['area'] = $params['search']['area'];
-                    if(isset($params['search']['exchange_id']))
-                        $searchParams['exchange_id'] = $params['search']['exchange_id'];
-                    $searchParams['phaseNo'] = $params['search']['phaseNo'];
-                }
-                if(empty($searchParams['area'])) $searchParams['area'] = -1;
-                if(empty($searchParams['exchange_id'])) $searchParams['exchange_id'] = -1;
+                    $exchanges = [];
+                    if($accessLevel['level'] == 1)
+                    {
+                        $areaSelection = [-1 => 'کل مناطق', 2 => '2', 3 => '3', 4 => '4', 5 => '5', 6 => '6', 7 => '7', 8 => '8'];
+                        $exchanges = \app\models\PcExchanges::find()->select('id, area, name')->where(['project_id' => $project['id'], 'type' => 2])->orderBy('area, name')->asArray()->all();
+                        $array = [-1=>[-1=>'کل مراکز'], 2=>[-1=>"کل مراکز"], 3=>[-1=>"کل مراکز"], 4=>[-1=>"کل مراکز"], 5=>[-1=>"کل مراکز"], 6=>[-1=>"کل مراکز"], 7=>[-1=>"کل مراکز"], 8=>[-1=>"کل مراکز"]];
+                        foreach ($exchanges as $exch)
+                        {
+                            $array[$exch['area']][$exch['id']] = $exch['name'];
+                        }
+                        $exchanges = $array;
+                    }
+                    else if($accessLevel['level'] == 2)
+                    {
+                        $areaSelection = [$ae['area']=>$ae['area']];
+                        $exchanges = \app\models\PcExchanges::find()->select('id, area, name')->where(['project_id' => $project['id'], 'type' => 2, 'area'=>$ae['area']])->orderBy('area, name')->asArray()->all();
 
-                //###################################
-                $phaseNo = $searchParams['phaseNo'];
-                $cond = [];
-                if($phaseNo > -1)
-                    $cond['phase'] = (integer)$phaseNo;
-                if($searchParams['area'] > -1)
-                    $cond['area'] = (integer)$searchParams['area'];
-                $exCond = [];
-                if($searchParams['exchange_id'] > -1)
-                    $exCond = ['or', ['exchange_id'=>(integer)$searchParams['exchange_id']], ['center_id'=>(integer)$searchParams['exchange_id']]];
+                        $array = [-1=>[-1=>'کل مراکز'], $ae['area']=>[-1=>'کل مراکز']];
+                        foreach ($exchanges as $exch)
+                        {
+                            $array[$exch['area']][$exch['id']] = $exch['name'];
+                        }
+                        $exchanges = $array;
 
-                $totalRecord = \app\models\PcViewRecords::find()->select('COUNT(DISTINCT exchange_id)')->where(['project_id'=>$project['id']])->andWhere($cond)->andWhere($exCond)->scalar();
-                if($totalRecord == 0)
-                {
-                    return $this->render('tablestat', ['searchParams'=>$searchParams, 'exchanges'=>$exchanges,'areas'=>[], 'tableInfo'=>[], 'projectName'=>$project['project'], 'areaSelection'=>$areaSelection]);
-                }
+                    }
+                    else if($accessLevel['level'] == 3)
+                    {
+                        $areaSelection = [$ae['area']=>$ae['area']];
+                        $exchanges = \app\models\PcExchanges::find()->select('id, area, name')->where(['project_id' => $project['id'], 'type' => 2, 'id'=>$ae['exchange_id']])->orderBy('area, name')->asArray()->all();
 
-                $recId = 1;
-                $tableInfo = []; //title count percent
-                array_push($tableInfo, ['تعداد کل رکوردها' , $totalRecord, '', $recId]);
-                $recId++;
+                        $array = [-1=>[-1=>'کل مراکز']];
+                        foreach ($exchanges as $exch)
+                        {
+                            $array[$exch['area']][$exch['id']] = $exch['name'];
+                        }
+                        $exchanges = $array;
+                    }
 
-//                $areas = \app\models\PcViewRecords::find()->select("area, COUNT(DISTINCT exchange_id) as cnt")->where(['project_id'=>$project['id']])->andWhere($cond)->andWhere($exCond)->groupBy("area")->asArray()->all();
-//                $len = sizeof($areas);
-//                if($len > 1)
-//                {
-//                    foreach ($areas as $a)
-//                    {
-//                        array_push($tableInfo, ['منطقه '.$a['area'], $a['cnt'], ' % '.round($a['cnt']/$totalRecord*100, 1), $recId]);
-//                        $recId++;
-//                    }
-//                }
+                    $searchParams = ['area'=>$area, 'exchange_id'=>$exchange_id, 'phaseNo'=>-1];
+                    $params = Yii::$app->request->post();
+                    if(isset($params['search']))
+                    {
+                        $searchParams['area'] = $params['search']['area'];
+                        if(isset($params['search']['exchange_id']))
+                            $searchParams['exchange_id'] = $params['search']['exchange_id'];
+                        $searchParams['phaseNo'] = $params['search']['phaseNo'];
+                    }
+                    if(empty($searchParams['area'])) $searchParams['area'] = -1;
+                    if(empty($searchParams['exchange_id'])) $searchParams['exchange_id'] = -1;
+
+                    //###################################
+                    $phaseNo = $searchParams['phaseNo'];
+                    $cond = [];
+                    if($phaseNo > -1)
+                        $cond['phase'] = (integer)$phaseNo;
+                    if($searchParams['area'] > -1)
+                        $cond['area'] = (integer)$searchParams['area'];
+                    $exCond = [];
+                    if($searchParams['exchange_id'] > -1)
+                        $exCond = ['or', ['exchange_id'=>(integer)$searchParams['exchange_id']], ['center_id'=>(integer)$searchParams['exchange_id']]];
+
+                    $totalRecord = \app\models\PcViewRecords::find()->select('COUNT(DISTINCT exchange_id)')->where(['project_id'=>$project['id']])->andWhere($cond)->andWhere($exCond)->scalar();
+                    if($totalRecord == 0)
+                    {
+                        return $this->render('tablestat', ['searchParams'=>$searchParams, 'exchanges'=>$exchanges,'areas'=>[], 'tableInfo'=>[], 'projectName'=>$project['project'], 'areaSelection'=>$areaSelection]);
+                    }
+
+                    $recId = 1;
+                    $tableInfo = []; //title count percent
+                    array_push($tableInfo, ['تعداد کل رکوردها' , $totalRecord, '', $recId]);
+                    $recId++;
+
+                //                $areas = \app\models\PcViewRecords::find()->select("area, COUNT(DISTINCT exchange_id) as cnt")->where(['project_id'=>$project['id']])->andWhere($cond)->andWhere($exCond)->groupBy("area")->asArray()->all();
+                //                $len = sizeof($areas);
+                //                if($len > 1)
+                //                {
+                //                    foreach ($areas as $a)
+                //                    {
+                //                        array_push($tableInfo, ['منطقه '.$a['area'], $a['cnt'], ' % '.round($a['cnt']/$totalRecord*100, 1), $recId]);
+                //                        $recId++;
+                //                    }
+                //                }
 
 
                 //operations type 3 numeric
                 $operations = \app\models\PcOperations::find()->where(['project_id'=>$project['id'], 'type_id'=>3])->orderBy('priority')->asArray()->all();
                 $condex = \app\models\PcViewRecords::find()->select('exchange_id')->where(['project_id'=>$project['id']])->andwhere($cond)->andWhere($exCond);
-
+                
                 foreach ($operations as $op)
                 {
                     $opId = $op['id'];
@@ -343,7 +343,7 @@ class StatController extends \yii\web\Controller
                     $recId++;
                 }
 
-//        operations type 1
+                //        operations type 1
                 $operations = \app\models\PcOperations::find()->where(['project_id'=>$project['id'], 'type_id'=>1])->orderBy('priority')->asArray()->all();
                 $choices = \app\models\PcViewChoices::find()->where(['project_id'=>$project['id']])->asArray()->all();
                 $array = [];
@@ -352,8 +352,8 @@ class StatController extends \yii\web\Controller
                     $array[$ch['id']] = $ch['choice'];
                 }
                 $choices = $array;
-
-
+                
+                
                 foreach ($operations as $op)
                 {
                     $opId = $op['id'];
@@ -391,17 +391,17 @@ class StatController extends \yii\web\Controller
                         $recId++;
                     }
                 }
-
-
-
+                
+                
+                
                 return $this->render('tablestat', ['searchParams'=>$searchParams, 'exchanges'=>$exchanges, 'tableInfo'=>$tableInfo, 'project'=>$project, 'projects'=>$projects, 'areaSelection'=>$areaSelection]);
             }
-
+            
         }
-
+        
         return $this->render('tablestat', ['searchParams'=>[], 'exchanges'=>[], 'tableInfo'=>[], 'project'=>[], 'projects'=>$projects, 'areaSelection'=>[]]);
     }
-
+    
     public function actionTotaltablestat($id = -1)
     {
         $session = Yii::$app->session;
@@ -415,7 +415,7 @@ class StatController extends \yii\web\Controller
         if($id > -1)
         {
             $project = \app\models\PcProjects::find()->where(['id' => $project_id, 'enabled' => true])->asArray()->one();
-
+            
             $session = Yii::$app->session;
             $session->open();
             $areaSelection = [-1=>'کل مناطق', 2=>'2', 3=>"3", 4=>'4', 5=>'5', 6=>'6', 7=>'7', 8=>'8'];
@@ -425,7 +425,7 @@ class StatController extends \yii\web\Controller
                 $ae = $userProjects[$project['id']];
                 $area = $ae['area'];
                 $exchange_id = $ae['exchange_id'];
-
+                
                 $accessLevel=['level'=>-1, 'name'=>''];
                 if(empty($ae['area']) && empty($ae['exchange_id']) )
                 {
@@ -439,7 +439,7 @@ class StatController extends \yii\web\Controller
                 {
                     $accessLevel['level'] = 3;
                 }
-
+                
                 $exchanges = [];
                 if($accessLevel['level'] == 1)
                 {
@@ -477,7 +477,7 @@ class StatController extends \yii\web\Controller
                     }
                     $exchanges = $array;
                 }
-
+                
                 $searchParams = ['area'=>$area, 'exchange_id'=>$exchange_id, 'phase'=>-1];
                 $params = Yii::$app->request->post();
                 if(isset($params['search']))
@@ -492,20 +492,20 @@ class StatController extends \yii\web\Controller
                 }
                 if(empty($searchParams['area'])) $searchParams['area'] = -1;
                 if(empty($searchParams['exchange_id'])) $searchParams['exchange_id'] = -1;
-
+                
                 //###################################
                 $recId = 1;
                 $tableInfo = [];
                 // [ 0=>[info, details] ] info:kol  details:areas       area=-1
                 // [ 2=>[info, details] ] info:area details:exchanges   area>1 exchange=-1
                 // [ 2=>[info, details] ] info:exchange details:sites   area>1 exchange>-1
-
+                
                 // info&details : [title=>'', progress=>'' , count=>'', attributes=>[] ]
                 // 0: info and areas
                 // 2~8: info and exchanges
-
+                
                 //info array [title, progress, count, attributes] -> [area2, 40%, 22, [ [op,cnt,%] , [] ...]]
-
+                
                 if($accessLevel['level'] ==  1)
                 {
                     $tableInfo = $this->getTableInfo($project_id, $searchParams['area'], $searchParams['exchange_id'], $searchParams['phase'] );
@@ -518,7 +518,7 @@ class StatController extends \yii\web\Controller
                 {
                     $tableInfo = $this->getTableInfo($project_id, $area, $exchange_id, $searchParams['phase']);
                 }
-
+                
                 $column = 4;
                 $temp = [];  // [id=>op,  ]
                 $opMap = []; // [ column=>[opId,title]]*
@@ -527,37 +527,37 @@ class StatController extends \yii\web\Controller
                 {
                     $temp[$o['id']] = $o['operation'];
                 }
-//                if(isset( $tableInfo['info']['attributes'] ))
-//                {
-//                    $attrs = $tableInfo['info']['attributes']; //[id=>[op,cnt,%]]
-//                    foreach($attrs as $id=>$attr)
-//                        $temp[$id] = $attr[0];
-//                }
-//                if( isset($tableInfo['details']) )
-//                {
-//                    $dets = $tableInfo['details'];
-//                    foreach($dets as $det)
-//                    {
-//                        if(isset($det['attributes']))
-//                        {
-//                            $attrs = $det['attributes'];
-//                            foreach($attrs as $id=>$attr)
-//                                $temp[$id] = $attr[0];
-//                        }
-//                    }
-//                }
+                //                if(isset( $tableInfo['info']['attributes'] ))
+                //                {
+                //                    $attrs = $tableInfo['info']['attributes']; //[id=>[op,cnt,%]]
+                //                    foreach($attrs as $id=>$attr)
+                //                        $temp[$id] = $attr[0];
+                //                }
+                //                if( isset($tableInfo['details']) )
+                //                {
+                //                    $dets = $tableInfo['details'];
+                //                    foreach($dets as $det)
+                //                    {
+                //                        if(isset($det['attributes']))
+                //                        {
+                //                            $attrs = $det['attributes'];
+                //                            foreach($attrs as $id=>$attr)
+                //                                $temp[$id] = $attr[0];
+                //                        }
+                //                    }
+                //                }
 
                 foreach($temp as $id=>$op)
                 {
                     $opMap[$column] = ['id'=>$id, 'title'=>$op];
                     $column++;
                 }
-
+                
                 return $this->render('totaltablestat', ['searchParams'=>$searchParams, 'exchanges'=>$exchanges, 'tableInfo'=>$tableInfo, 'project'=>$project, 'projects'=>$projects, 'areaSelection'=>$areaSelection, 'opMap'=>$opMap]);
             }
-
+            
         }
-
+        
         return $this->render('totaltablestat', ['searchParams'=>[], 'exchanges'=>[], 'tableInfo'=>[], 'project'=>[], 'projects'=>$projects, 'areaSelection'=>[], 'opMap'=>[]]);
     }
 
@@ -566,13 +566,13 @@ class StatController extends \yii\web\Controller
         // [ 0=>[info, details] ] info:kol  details:areas       area=-1
         // [ 2=>[info, details] ] info:area details:exchanges   area>1 exchange=-1
         // [ 2=>[info, details] ] info:exchange details:sites   area>1 exchange>-1
-
+        
         // info&details : [title=>'', progress=>'' , count=>'', attributes=>[] ]
         // 0: info and areas
         // 2~8: info and exchanges
-
+        
         //info array [title, progress, count, attributes] -> [area2, 40%, 22, [ [op,cnt,%] , [] ...]]
-
+        
         $tableInfo = [];
         $array = [];
         if($area == -1)
@@ -581,28 +581,28 @@ class StatController extends \yii\web\Controller
             $info = [];
             $details = [];
             $info = $this->getTableInfoArray($project_id, -1, -1, $phase);
-
+            
             $array = $this->getTableInfoArray($project_id, 2, -1, $phase);
             array_push($details, $array);
-
+            
             $array = $this->getTableInfoArray($project_id, 3, -1, $phase);
             array_push($details, $array);
-
+            
             $array = $this->getTableInfoArray($project_id, 4, -1, $phase);
             array_push($details, $array);
-
+            
             $array = $this->getTableInfoArray($project_id, 5, -1, $phase);
             array_push($details, $array);
-
+            
             $array = $this->getTableInfoArray($project_id, 6, -1, $phase);
             array_push($details, $array);
-
+            
             $array = $this->getTableInfoArray($project_id, 7, -1, $phase);
             array_push($details, $array);
-
+            
             $array = $this->getTableInfoArray($project_id, 8, -1, $phase);
             array_push($details, $array);
-
+            
             $tableInfo = ['info'=>$info, 'details'=>$details];
         }
         else if( ($area > 1) && ($exchange_id == -1) )
@@ -611,19 +611,19 @@ class StatController extends \yii\web\Controller
             $details = []; //exchanges
             $array = [];
             $info = $this->getTableInfoArray($project_id, $area, -1, $phase);
-
+            
             $exchanges = [];
             if($phase > -1)
                 $exchanges = \app\models\PcViewRecords::find()->select("center_id")->distinct()->where(['project_id'=>$project_id, 'area'=>$area, 'phase'=>$phase])->asArray()->all();
             else 
                 $exchanges = \app\models\PcViewRecords::find()->select("center_id")->distinct()->where(['project_id'=>$project_id, 'area'=>$area])->asArray()->all();
-
+                
             foreach($exchanges as $exchange)
             {
                 $array = $this->getTableInfoArray($project_id, $area, $exchange['center_id'], $phase);
                 array_push($details, $array);
             }
-
+            
             $tableInfo = ['info'=>$info, 'details'=>$details];
         }
         else if( ($area > 1) && ($exchange_id > -1) )
@@ -633,21 +633,21 @@ class StatController extends \yii\web\Controller
             $details = []; //sites
             $array = [];
             $info = $this->getTableInfoArray($project_id, $area, $exchange_id, $phase);
-
+            
             if($phase > -1)
                 $sites = \app\models\PcViewRecords::find()->select("exchange_id")->distinct()->where(['project_id'=>$project_id, 'area'=>$area, 'center_id'=>$exchange_id, 'phase'=>$phase])->asArray()->all();
             else
                 $sites = \app\models\PcViewRecords::find()->select("exchange_id")->distinct()->where(['project_id'=>$project_id, 'area'=>$area, 'center_id'=>$exchange_id])->asArray()->all();
-
+                
             foreach($sites as $site)
             {
                 $array = $this->getTableInfoArray($project_id, $area, $site['exchange_id'], $phase);
                 array_push($details, $array);
             }
-
+            
             $tableInfo = ['info'=>$info, 'details'=>$details];
         }
-
+        
         return $tableInfo;
     }
 
@@ -656,17 +656,18 @@ class StatController extends \yii\web\Controller
         // [ 0=>[ info=>[title=>'', progress=>'' , count=>'', attributes=>[] ], details=>[ area=>[...] ] ], 2=>[ info=>[], details=>[] ], 3=>[], 4=>[], ... ]
         // 0: info and areas
         // 2~8: info and exchanges
-
+        
         // [title, progress, count, attributes] -> [area2, 40%, 22, [ [op,cnt,%] , [] ...]]
-
+        
         $info = [];
         if($area == -1)
         {
             $title = "کل مناطق";
             $progress = $this->getProgress($project_id, -1, -1, $phase);
             $count = $this->getCount($project_id, -1, -1, $phase);
+            $lomCount = $this->getUsedPerDedicate($project_id , -1);
             $attributes = $this->getAttributes($project_id,-1, -1, $phase); //[ opId=>[op,cnt,perc], [], [], ...];
-            $info = ['title'=>$title, 'progress'=>$progress, 'count'=>$count, 'attributes'=>$attributes, 'phase'=>$phase];
+            $info = ['title'=>$title, 'progress'=>$progress, 'count'=>$count, 'usedPerDedicate'=>$lomCount,  'attributes'=>$attributes, 'phase'=>$phase];
         }
         else if( ($area > 1) && ($exchange_id == -1) )
         {
@@ -674,8 +675,9 @@ class StatController extends \yii\web\Controller
             $title = "منطقه " . $area;
             $progress = $this->getProgress($project_id, $area, -1, $phase);
             $count = $this->getCount($project_id, $area, -1, $phase);
+            $lomCount = $this->getUsedPerDedicate($project_id , $area);
             $attributes = $this->getAttributes($project_id, $area, -1, $phase); //[ [op,cnt,perc], [], [], ...];
-            $info = ['title' => $title, 'progress' => $progress, 'count' => $count, 'attributes' => $attributes, 'phase'=>$phase];
+            $info = ['title' => $title, 'progress' => $progress, 'count' => $count, 'usedPerDedicate'=>$lomCount, 'attributes' => $attributes, 'phase'=>$phase];
         }
         else if( ($area > 1) && ($exchange_id > -1) )
         {
@@ -686,9 +688,9 @@ class StatController extends \yii\web\Controller
             $progress = $this->getProgress($project_id, $area, $exchange_id, $phase);
             $count = $this->getCount($project_id, $area, $exchange_id, $phase);
             $attributes = $this->getAttributes($project_id, $area, $exchange_id, $phase); //[ [op,cnt,perc], [], [], ...];
-            $info = ['title'=>$title, 'progress'=>$progress, 'count'=>$count, 'attributes'=>$attributes, 'phase'=>$phase];
+            $info = ['title'=>$title, 'progress'=>$progress, 'count'=>$count, 'usedPerDedicate'=>-1,  'attributes'=>$attributes, 'phase'=>$phase];
         }
-
+        
         return $info;
     }
 
@@ -735,13 +737,13 @@ class StatController extends \yii\web\Controller
                         $array[$opId] = [$op['operation'], $oR['cnt'],  round($oR['cnt']/$totalRecord*100, 1)." % "];
                     }
                 }
-
-//                    if(!empty($choices[$oR['op_value']]))
-//                    {
-//                        //array_push($op3Stat,[$op['operation'], $choices[$oR['op_value']].' : '.$oR['cnt']]);
-//                        if(str_contains($choices[$oR['op_value']], ' شده'))
-//                            array_push($attributes,[$op['operation'], $oR['cnt'],  ' % '.round($oR['cnt']/$totalRecord*100, 1), $recId]);
-//                    }
+                
+                //                if(!empty($choices[$oR['op_value']]))
+              //                  {
+               //                        //array_push($op3Stat,[$op['operation'], $choices[$oR['op_value']].' : '.$oR['cnt']]);
+              //                        if(str_contains($choices[$oR['op_value']], ' شده'))
+             //                            array_push($attributes,[$op['operation'], $oR['cnt'],  ' % '.round($oR['cnt']/$totalRecord*100, 1), $recId]);
+            //                    }
             }
 
         }
@@ -801,46 +803,53 @@ class StatController extends \yii\web\Controller
         }
         else if ($area > 1)
         {
+            $field = 'area'.$area; // area2 ...  field
+            $lomCount = \app\models\PcLom::find()->select('SUM('.$field.')')->where(['project_id'=>$project_id])->scalar();
+            $used = \app\models\PcViewLomDetail::find()->select('SUM(quantity)')->where(['project_id'=>$project_id, 'area'=>$area])->scalar();
+            
             if($phase > -1)
             {
                 $ids = \app\models\PcViewRecords::find()->select('exchange_id')->distinct()->where(['project_id'=>$project_id, 'area'=>$area, 'phase'=>$phase]); 
                 $prog = \app\models\PcViewExchanges::find()->select(' SUM(weight*100/project_weight) as percentage, COUNT(id) as cnt')->where(['project_id'=>$project_id, 'phase'=>$phase])->andWhere(['>', 'project_weight', 0])->andWhere(['in', 'id', $ids])->asArray()->one();
-                if($prog['cnt'] == 0) $prog = 0; 
-                else  
-                    $prog = round($prog['percentage'] / $prog['cnt']);
             }
             else 
             {
                 $ids = \app\models\PcViewRecords::find()->select('exchange_id')->distinct()->where(['project_id'=>$project_id, 'area'=>$area]); 
                 $prog = \app\models\PcViewExchanges::find()->select(' SUM(weight*100/project_weight) as percentage, COUNT(id) as cnt')->where(['project_id'=>$project_id])->andWhere(['>', 'project_weight', 0])->andWhere(['in', 'id', $ids])->asArray()->one();
-                if($prog['cnt'] == 0) $prog = 0; 
-                else  
-                    $prog = round($prog['percentage'] / $prog['cnt']);
             }
+            
+            if(($prog['cnt'] == 0) || ($lomCount == 0) )$prog = 0; 
+            else  
+                $prog = round($prog['percentage'] / $prog['cnt'] * $used/$lomCount);
+                //$prog = round($prog['percentage'] / $lomCount);
+            
         }
         else
         {
+            $lomCount = \app\models\PcLom::find()->select('SUM(quantity)')->where(['project_id'=>$project_id])->scalar();
+            $used = \app\models\PcViewLomDetail::find()->select('SUM(quantity)')->where(['project_id'=>$project_id])->scalar();
+
             if($phase > -1)
             {
                 $ids = \app\models\PcViewRecords::find()->select('exchange_id')->distinct()->where(['project_id'=>$project_id, 'phase'=>$phase]);
                 $prog = \app\models\PcViewExchanges::find()->select('SUM(weight*100/project_weight) as percentage, COUNT(id) as cnt')->where(['project_id'=>$project_id, 'phase'=>$phase])->andWhere(['>', 'project_weight', 0])->andWhere(['in', 'id', $ids])->asArray()->one();
-                if($prog['cnt'] == 0) 
-                $prog = 0;
-                else 
-                $prog = round($prog['percentage'] / $prog['cnt']);
             }
             else 
             {
                 $ids = \app\models\PcViewRecords::find()->select('exchange_id')->distinct()->where(['project_id'=>$project_id]);
                 $prog = \app\models\PcViewExchanges::find()->select('SUM(weight*100/project_weight) as percentage, COUNT(id) as cnt')->where(['project_id'=>$project_id])->andWhere(['>', 'project_weight', 0])->andWhere(['in', 'id', $ids])->asArray()->one();
-                if($prog['cnt'] == 0) 
-                $prog = 0;
-                else 
-                $prog = round($prog['percentage'] / $prog['cnt']);
             }
-        }
 
-        $prog = $prog." % ";
+            if(($prog['cnt'] == 0) || ($lomCount == 0) )$prog = 0; 
+            else 
+            $prog = round($prog['percentage'] / $prog['cnt'] * $used/$lomCount); // )
+
+        }
+        if($prog > 100)
+            $prog = "-";
+        else 
+            $prog = $prog." % ";
+        
         return $prog;
     }
 
@@ -888,6 +897,28 @@ class StatController extends \yii\web\Controller
         }
 
         return $count;
+    }
+
+    private function getUsedPerDedicate($project_id, $area)
+    {
+        $used = 0;
+        $dedicate = 0;
+        
+        if ($area > 1)
+        {
+                $exCond = ['area'=>$area];
+                $field = 'area'.$area; // area2 ...  field
+                $dedicate = \app\models\PcLom::find()->select('SUM('.$field.')')->where(['project_id'=>$project_id])->scalar();
+                $used = \app\models\PcViewLomDetail::find()->select('SUM(quantity)')->where(['project_id'=>$project_id, 'area'=>$area])->scalar();
+        }
+        else
+        {
+            $dedicate = \app\models\PcLom::find()->select('SUM(quantity)')->where(['project_id'=>$project_id])->scalar();
+            $used = \app\models\PcViewLomDetail::find()->select('SUM(quantity)')->where(['project_id'=>$project_id])->scalar();
+        }
+        
+        if($dedicate == 0) return "-";
+        else return $used.' / '.$dedicate;
     }
 
     public function actionReport_tablestat($id, $AREA, $EXCHANGE_ID, $PHASE=-1)
@@ -967,7 +998,7 @@ class StatController extends \yii\web\Controller
                         $column++;
                     }
 
-//                    REPORT
+                   //                    REPORT
                     $this->ReportTableStat($project['project'], $tableInfo, $opMap );
                 }
 
@@ -1111,7 +1142,7 @@ class StatController extends \yii\web\Controller
             }
 
             $row++;
-//            info
+           //            info
         $sheet->getRowDimension($row)->setRowHeight(30);
 
         $info = $tableInfo['info'];
@@ -1146,7 +1177,7 @@ class StatController extends \yii\web\Controller
         }
 
         $row++;
-//            details
+          //            details
             $details = $tableInfo['details'];
         foreach($details as $detail)
         {
@@ -1518,7 +1549,7 @@ class StatController extends \yii\web\Controller
                 else
                 {
                     $modelArray[$area] = [];
-
+                    
                     foreach ($lomArray as $id=>$param)
                     {
                         $AREA = $area;
@@ -1540,11 +1571,11 @@ class StatController extends \yii\web\Controller
                     }
                 }
                 //modelArray : [ 0=>[lom1=>model1 , lom2=>model2 ], 2=>[] ... ]
-//return var_dump($modelArray[2]);
+                //return var_dump($modelArray[2]);
                 return $this->render('dedication', ['lom'=>$lom, 'modelArray'=>$modelArray,'area'=>$area, 'projects'=>$projects, 'project'=>$project]);
             }
         }
-
+        
         return $this->render('dedication', ['lom'=>"", 'modelArray'=>[], 'area'=>"", 'projects'=>$projects, 'project'=>"", 'modelArray'=>[]]);
     }
 
@@ -1575,7 +1606,7 @@ class StatController extends \yii\web\Controller
             return $this->render('province', ['phaseNo'=>$phaseNo, 'areas'=>$areas, 'op1Stat'=>$op1Stat, 'op3Stat'=>$op3Stat, 'projectName'=>$projectName]);
         }
         $areas = \app\models\PcViewRecords::find()->select("area, COUNT(DISTINCT exchange_id) as cnt")->where(['project_id'=>$project['id']])->andWhere($phase)->groupBy("area")->asArray()->all();
-//        [[area=>2,cnt=>202], [area=>4,cnt=>2], ... ]
+        //        [[area=>2,cnt=>202], [area=>4,cnt=>2], ... ]
         $data = [];
         $label = [];
         $color = $this->getGraphColorArray(sizeof($areas));
@@ -1598,7 +1629,7 @@ class StatController extends \yii\web\Controller
             array_push($op3Stat,[$op['operation'], $val]);
         }
 
-//        operations type 1
+        //        operations type 1
         $op1Stat = [];// [ kv=>[data, color, label, convasid] , [op2], [op3], ]
         $operations = \app\models\PcOperations::find()->where(['project_id'=>$project['id'], 'type_id'=>1])->orderBy('priority')->asArray()->all();
         $choices = \app\models\PcViewChoices::find()->where(['project_id'=>$project['id']])->asArray()->all();
@@ -1615,7 +1646,7 @@ class StatController extends \yii\web\Controller
             $color = [];
             $label = [];
             $opId = $op['id'];
-//            $opChoices = $choices[$opId]; // [2=>'onu', 3=>'copp' ...]
+            //            $opChoices = $choices[$opId]; // [2=>'onu', 3=>'copp' ...]
             $opRec = \app\models\PcViewRecords::find()->select("op_value, COUNT(DISTINCT exchange_id) as cnt")->where(['op_id'=>$opId])->andWhere(['in', 'exchange_id',$phasex])->groupBy("op_value")->asArray()->all();
             $color = $this->getGraphColorArray(sizeof($opRec));
             foreach($opRec as $oR)
@@ -1686,7 +1717,7 @@ class StatController extends \yii\web\Controller
                 $phase = ['operation'=>'فاز', 'op_value'=>$phaseNo];
             else
                 $phaseNo = -1;
-
+            
             if(isset(Yii::$app->request->post()['area'])) $area = Yii::$app->request->post()['area'];
         }
 
@@ -1697,7 +1728,7 @@ class StatController extends \yii\web\Controller
             $op3Stat =[];
             return $this->render('area', ['phaseNo'=>$phaseNo, 'op1Stat'=>$op1Stat,'op3Stat'=>$op3Stat, 'area'=>$area, 'projectName'=>$projectName]);
         }
-        //operations type 3 numeric
+         //operations type 3 numeric
         $op3Stat = [];
         array_push($op3Stat, ['تعداد کل', $totalRecord]);
         $operations = \app\models\PcOperations::find()->where(['project_id'=>$project['id'], 'type_id'=>3])->orderBy('priority')->asArray()->all();
@@ -1709,8 +1740,8 @@ class StatController extends \yii\web\Controller
             $val = \app\models\PcViewRecords::find()->select("SUM(op_value::decimal)")->where(['op_id'=>$opId,'area'=>$area, 'project_id'=>$project['id']])->andWhere(['in', 'exchange_id',$phasex])->scalar();
             array_push($op3Stat,[$op['operation'], $val]);
         }
-
-//        operations
+        
+        //        operations
         $op1Stat = [];// [ kv=>[data, color, label, convasid] , [op2], [op3], ]
         $operations = \app\models\PcOperations::find()->where(['project_id'=>$project['id'], 'type_id'=>1])->orderBy('priority')->asArray()->all();
         $choices = \app\models\PcViewChoices::find()->where(['project_id'=>$project['id']])->asArray()->all();
@@ -1730,8 +1761,8 @@ class StatController extends \yii\web\Controller
             $color = $this->getGraphColorArray(sizeof($opRec));
             foreach($opRec as $oR)
             {
-//                array_push($op3Stat,[$op['operation'], $choices[$oR['op_value']].' : '.$oR['cnt']]);
-
+             //   array_push($op3Stat,[$op['operation'], $choices[$oR['op_value']].' : '.$oR['cnt']]);
+                
                 array_push($data, round($oR['cnt']/$totalRecord*100, 1));
                 array_push($label, $choices[$oR['op_value']].' ['.$oR['cnt'].'] ');
             }
@@ -2517,11 +2548,11 @@ class StatController extends \yii\web\Controller
             $session->open();
             $userProjects = $session['userProjects'];
             if (isset($userProjects[$project['id']])) {
-
+                
                 $ae = $userProjects[$project['id']];
                 $area = $ae['area'];
                 $exchange_id = $ae['exchange_id'];
-
+                
                 $accessLevel=['level'=>-1, 'name'=>''];
                 if(empty($ae['area']) && empty($ae['exchange_id']) )
                 {
@@ -2534,8 +2565,8 @@ class StatController extends \yii\web\Controller
                 else if(($ae['area'] > 0) && ($ae['exchange_id'] > 0))
                 {
                     $accessLevel['level'] = 3;
-                }
-
+                } 
+                
                 $operations = \app\models\PcOperations::find()->where(['project_id'=>$project['id']])->orderBy('priority')->asArray()->all();
                 $choices = \app\models\PcViewChoices::find()->select('id,choice')->where(['project_id'=>$project['id']])->asArray()->all();
                 $array = [];
@@ -2544,11 +2575,11 @@ class StatController extends \yii\web\Controller
                     $array[$ch['id']] = $ch['choice'];
                 }
                 $choices = $array;
-
-
+                
+                
                 if(empty($area)) $area = -1;
                 if(empty($exchange_id)) $exchange_id = -1;
-
+                
                 $searchParams = ['area'=>$area, 'exchange_id'=>$exchange_id, 'phaseNo'=>-1];
                 $params = $post;
                 $repType = 1;// horizontally report
@@ -2572,7 +2603,7 @@ class StatController extends \yii\web\Controller
                         $modString = $fromMod." ~ ".$toMod;
                     $searchParams['fromMod'] = $fromMod;
                     $searchParams['toMod'] = $toMod;
-
+                    
                     foreach ($operations as $op)
                     {
                         if(isset($params['search'][$op['id']]))
@@ -2584,7 +2615,7 @@ class StatController extends \yii\web\Controller
                 }
                 if(empty($searchParams['area'])) $searchParams['area'] = -1;
                 if(empty($searchParams['exchange_id'])) $searchParams['exchange_id'] = -1;
-
+                
                 //###################################
                 $phaseNo = $searchParams['phaseNo'];
                 $cond = [];
@@ -2596,7 +2627,7 @@ class StatController extends \yii\web\Controller
                 $exCond = [];
                 if($searchParams['exchange_id'] > -1)
                     $exCond = ['or', ['exchange_id'=>(integer)$searchParams['exchange_id']], ['center_id'=>(integer)$searchParams['exchange_id']]];
-
+                
                 //time
                 $modCond = [];
                 if( (!empty($fromMod)) && (!empty($toMod)) )
@@ -2614,11 +2645,11 @@ class StatController extends \yii\web\Controller
                 {
                     $toMod = $this->jalaliToUnix($toMod, true);
                     $modCond = ['<', 'modified_ts', $toMod];
-                }
-
-                //select exchanges cascade 1
+                } 
+                
+                //select  exchanges cascade 1
                 $exchanges = \app\models\PcViewRecords::find()->select('exchange_id')->where($cond)->andWhere($exCond)->andWhere($modCond);
-
+                
                 foreach ($operations as $op)
                 {
                     if(isset($searchParams[$op['id']]))
@@ -2632,11 +2663,11 @@ class StatController extends \yii\web\Controller
                         }
                     }
                 }
-
-
+                
+                
                 //select records
                 $records = \app\models\PcViewRecords::find()->where(['exchange_id'=>$exchanges])->orderBy('area, center_name, name', 'priority')->asArray()->all();
-
+                
                 $array = []; // [ [area=>2, x=>, ....], []... ]
                 $ex1 = -1;
                 foreach ($records as $rec)
@@ -2659,13 +2690,13 @@ class StatController extends \yii\web\Controller
                         $array[$rec['exchange_id']]['weight'] = $rec['weight'];
                         $array[$rec['exchange_id']]['project_weight'] = $rec['project_weight'];
                     }
-
+                    
                     $array[$rec['exchange_id']][$rec['op_id']] = $rec['op_value'];
                 }
                 $tableInfo = $array;
             }
         }
-
+        
         return $tableInfo;
     }
 
@@ -3094,21 +3125,21 @@ class StatController extends \yii\web\Controller
         $sheet->getStyle('L'.$row)->applyFromArray($HeaderStyle);
         $sheet->setCellValue('L'.$row, 'ضریب کل');
         $sheet->getColumnDimension('L')->setWidth(30);
-
+        
         foreach ($operations as $op)
         {
             $sheet->getStyle($opCol[$op['id']].$row)->applyFromArray($HeaderStyle);
             $sheet->setCellValue($opCol[$op['id']].$row, $op['operation']);
             $sheet->getColumnDimension($opCol[$op['id']])->setWidth(25);
         }
-
+            
         $row++;
         if(!empty($queryParams))
         {
             //filter row row 5
             $sheet->getRowDimension($row)->setRowHeight(30);
             $sheet->getStyle('A'.$row.':'.$maxColumn.$row)->applyFromArray($SearchStyle);
-
+            
             if(isset($queryParams['area']))
             {
                 $sheet->setCellValue('A'.$row, $queryParams['area']);
@@ -3154,7 +3185,7 @@ class StatController extends \yii\web\Controller
                 $sheet->setCellValue('I'.$row, $queryParams['modified_ts']);
                 $sheet->getStyle('I'.$row.':I'.$maxRows)->applyFromArray($SearchStyle);
             }
-
+            
             foreach ($operations as $op)
             {
                 if(isset($queryParams[$op['id']]))
@@ -3167,11 +3198,11 @@ class StatController extends \yii\web\Controller
                     $sheet->setCellValue($opCol[$op['id']].$row, $val);
                 }
             }
-
+            
             $row++;
         }
-
-
+        
+        
         foreach ($records as $id=>$rec)
         {
             $sheet->getRowDimension($row)->setRowHeight(30);
@@ -3188,7 +3219,7 @@ class StatController extends \yii\web\Controller
             $sheet->setCellValue('J'.$row, $rec['percentage'].'%');
             $sheet->setCellValue('K'.$row, $rec['weight']);
             $sheet->setCellValue('L'.$row, $rec['project_weight']);
-
+            
             foreach ($operations as $op)
             {
                 if(isset($rec[$op['id']]))
@@ -3202,8 +3233,8 @@ class StatController extends \yii\web\Controller
             }
             $row++;
         }
-
-// Redirect output to a client’s web browser (Xls)
+        
+        // Redirect output to a client’s web browser (Xls)
         header('Content-Type: application/vnd.ms-excel');
         header('Content-Disposition: attachment;filename="PDCP-Report'.$project['project'].'.xls"');
         header('Cache-Control: max-age=0');
@@ -3387,17 +3418,17 @@ class StatController extends \yii\web\Controller
             $sheet->setCellValue('A6', 'فعالیت');
             $sheet->getStyle('B6')->applyFromArray($HeaderStyle);
             $sheet->setCellValue('B6', 'نتیجه فعالیت');
-
+            
         }
-
-
+        
+        
         foreach ($records as $id=>$rec)
         {
             $sheet->getRowDimension($row)->setRowHeight(30);
             $sheet->mergeCells('A'.$row.':B'.$row);
             $sheet->getStyle('A'.$row)->applyFromArray($TopicStyle);
             $sheet->setCellValue('A'.$row, $rec['name']);
-
+            
             $row++;
             $sheet->getRowDimension($row)->setRowHeight(30);
             $sheet->getStyle('A'.$row)->applyFromArray($TitleStyle);
@@ -3465,7 +3496,7 @@ class StatController extends \yii\web\Controller
             $sheet->getStyle('B'.$row)->applyFromArray($ContentStyle);
             $sheet->setCellValue('B'.$row, $rec['project_weight']);
             $row++;
-
+            
             foreach ($operations as $op)
             {
                 if(isset($rec[$op['id']]))
@@ -3483,8 +3514,8 @@ class StatController extends \yii\web\Controller
                 }
             }
         }
-
-// Redirect output to a client’s web browser (Xls)
+        
+        // Redirect output to a client’s web browser (Xls)
         header('Content-Type: application/vnd.ms-excel');
         header('Content-Disposition: attachment;filename="PDCP-Report'.$project['project'].'.xls"');
         header('Cache-Control: max-age=0');
@@ -3492,7 +3523,7 @@ class StatController extends \yii\web\Controller
         header('Last-Modified: ' . gmdate('D, d M Y H:i:s') . ' GMT'); // always modified
         header('Cache-Control: cache, must-revalidate'); // HTTP/1.1
         header('Pragma: public'); // HTTP/1.0
-
+        
         $writer = IOFactory::createWriter($spreadsheet, 'Xls');
         $writer->save('php://output');
         exit;

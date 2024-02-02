@@ -58,7 +58,7 @@ if(isset($project['id'])) $pId = $project['id'];
 
 
                     <label for="phase-input"  style="color:white;">فاز</label>
-                     <?= Html::dropDownList('search[phase]',$searchParams['phase'], [-1=>'کل فازها', 1=>'1', 2=>'2', 3=>'3', 4=>'4', 5=>'5', 6=>'6', 7=>'7', 8=>'8', 9=>'9', 10=>'10'],['id'=>'phase-input', 'style'=>'height:40px;width:100px;']); ?>
+                    <?= Html::dropDownList('search[phase]',$searchParams['phase'], [-1=>'کل فازها', 1=>'1', 2=>'2', 3=>'3', 4=>'4', 5=>'5', 6=>'6', 7=>'7', 8=>'8', 9=>'9', 10=>'10'],['id'=>'phase-input', 'style'=>'height:40px;width:100px;']); ?>
             
 
                     <button type="submit" class="btn btn-success" style="height:38px;"><i class="fa fa-search text-white" ></i> جستجو </button>
@@ -70,27 +70,39 @@ if(isset($project['id'])) $pId = $project['id'];
                     <div style="width: 100%; min-height: 80vh; overflow: auto;">
 
                         <table class="table table-striped table-hover table-bordered" style="background-color:#eee;width:90%; margin:auto; color:#eee;direction:rtl;">
-                            <tr style="background-color: #1b6d85; color:white; font-weight: bold;">
+                        <!-- table header -->
+                        <tr style="background-color: #1b6d85; color:white; font-weight: bold;">
                                 <td style="text-align:center;">عنوان</td>
-                                <td style='text-align:center;'>تعداد</td>
+                                
+                                <td style='text-align:center;'>تعداد سایت</td>
                                 <?php
+                                if($searchParams['area'] == -1)
+                                {
+                                    echo "<td style='text-align:center;'>تجهیز استفاده شده بر تخصیصی</td>";
+                                }
+                                
                                 foreach($opMap as $col=>$array)
                                     {
                                         echo "<td style='text-align:center;'>".$array['title']."</td>";
                                     }
                                 ?>
                                 <td style="text-align:center;">درصد پیشرفت</td>
-                            </tr>
-                            <?php echo
+                        </tr>
+
+                        <?php 
                             $rowId = 1;
                             $info = $tableInfo['info'];
                             $details = $tableInfo['details'];
-                            ?>
+                        ?>
 
-                            <tr class="table-row enFont" style="background-color:#93C763; color:#000; font-weight:bold;direction:ltr;" id="<?=$rowId?>" onclick="activateRow(this);">
-                                <td style='text-align:center;'><?= $info['title']; ?></td>
-                                <td style='text-align:center;'><?= $info['count']; ?></td>
-                                <?php
+                        <tr class="table-row enFont" style="background-color:#93C763; color:#000; font-weight:bold;direction:ltr;" id="<?=$rowId?>" onclick="activateRow(this);">
+                            <td style='text-align:center;'><?= $info['title']; ?></td>
+                            <td style='text-align:center;'><?= $info['count']; ?></td>
+                            <?php
+                                if($searchParams['area'] == -1)
+                                {
+                                    echo "<td style='text-align:center;'>".$info['usedPerDedicate']."</td>";
+                                }
                                 foreach($opMap as $col=>$array)
                                 {
                                     $val = 0;
@@ -100,14 +112,14 @@ if(isset($project['id'])) $pId = $project['id'];
                                         $opId = $array['id'];
                                         $count = $temp[1];
                                         $perc = $temp[2];
-//                                        $val = $count." [".$perc." ]";
+                                        // $val = $count." [".$perc." ]";
                                         $val = $count;
                                     }
                                     echo "<td style='text-align:center;'>".$val."</td>";
                                 }
-                                ?>
-                                <td style='text-align:center;'><?= $info['progress']; ?></td>
-                            </tr>
+                            ?>
+                            <td style='text-align:center;'><?= $info['progress']; ?></td>
+                        </tr>
 
                             <!--  details  -->
                             <?php
@@ -115,8 +127,12 @@ if(isset($project['id'])) $pId = $project['id'];
                             {
                                 $rowId++;
                                 echo "<tr class='table-row enFont' style='color:#000; font-weight:bold;direction:ltr;' id='".$rowId."' onclick='activateRow(this);'>";
-                                     echo "<td style='text-align:center;'>".$detail['title']."</td>";
-                                     echo "<td style='text-align:center;'>".$detail['count']."</td>";
+                                echo "<td style='text-align:center;'>".$detail['title']."</td>";
+                                echo "<td style='text-align:center;'>".$detail['count']."</td>";
+                                if($searchParams['area'] == -1)
+                                {
+                                    echo "<td style='text-align:center;'>".$detail['usedPerDedicate']."</td>";
+                                }
 
                                     foreach($opMap as $col=>$array)
                                     {
@@ -127,7 +143,7 @@ if(isset($project['id'])) $pId = $project['id'];
                                             $opId = $array['id'];
                                             $count = $temp[1];
                                             $perc = $temp[2];
-//                                            $val = $count." [".$perc." ]";
+                                            //  $val = $count." [".$perc." ]";
                                             $val = $count;
                                         }
                                         echo "<td style='text-align:center;'>".$val."</td>";
@@ -170,7 +186,7 @@ function areaChanged(obj)
             $(eselect).append(o);
         }
     
-     $(eselect).val("-1");
+    $(eselect).val("-1");
 }
 
 function activateRow(obj)
