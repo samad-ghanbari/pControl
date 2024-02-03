@@ -78,7 +78,7 @@ if(isset($project['id'])) $pId = $project['id'];
                                 <?php
                                 if($searchParams['area'] == -1)
                                 {
-                                    echo "<td style='text-align:center;'>تجهیز استفاده شده بر تخصیصی</td>";
+                                    echo "<td style='text-align:center;'>تخصیص / اقدام‌شده</td>";
                                 }
                                 
                                 foreach($opMap as $col=>$array)
