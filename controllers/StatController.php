@@ -917,6 +917,7 @@ class StatController extends \yii\web\Controller
             $used = \app\models\PcViewLomDetail::find()->select('SUM(quantity)')->where(['project_id'=>$project_id])->scalar();
         }
         
+        if(empty($used)) $used = 0;
         if($dedicate == 0) return "-";
         else return $used.' / '.$dedicate;
     }
