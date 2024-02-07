@@ -665,9 +665,10 @@ class StatController extends \yii\web\Controller
             $title = "کل مناطق";
             $progress = $this->getProgress($project_id, -1, -1, $phase);
             $count = $this->getCount($project_id, -1, -1, $phase);
-            $lomCount = $this->getUsedPerDedicate($project_id , -1);
+            $dedicated = $this->getDedicated($project_id , -1);
+            $onAction = $this->getOnAction($project_id, -1);
             $attributes = $this->getAttributes($project_id,-1, -1, $phase); //[ opId=>[op,cnt,perc], [], [], ...];
-            $info = ['title'=>$title, 'progress'=>$progress, 'count'=>$count, 'usedPerDedicate'=>$lomCount,  'attributes'=>$attributes, 'phase'=>$phase];
+            $info = ['title'=>$title, 'progress'=>$progress, 'count'=>$count, 'dedicated'=>$dedicated, 'onAction'=>$onAction,  'attributes'=>$attributes, 'phase'=>$phase];
         }
         else if( ($area > 1) && ($exchange_id == -1) )
         {
@@ -675,9 +676,10 @@ class StatController extends \yii\web\Controller
             $title = "منطقه " . $area;
             $progress = $this->getProgress($project_id, $area, -1, $phase);
             $count = $this->getCount($project_id, $area, -1, $phase);
-            $lomCount = $this->getUsedPerDedicate($project_id , $area);
+            $dedicated = $this->getDedicated($project_id , $area);
+            $onAction = $this->getOnAction($project_id, $area);
             $attributes = $this->getAttributes($project_id, $area, -1, $phase); //[ [op,cnt,perc], [], [], ...];
-            $info = ['title' => $title, 'progress' => $progress, 'count' => $count, 'usedPerDedicate'=>$lomCount, 'attributes' => $attributes, 'phase'=>$phase];
+            $info = ['title' => $title, 'progress' => $progress, 'count' => $count, 'dedicated'=>$dedicated, 'onAction'=>$onAction, 'attributes' => $attributes, 'phase'=>$phase];
         }
         else if( ($area > 1) && ($exchange_id > -1) )
         {
@@ -899,9 +901,8 @@ class StatController extends \yii\web\Controller
         return $count;
     }
 
-    private function getUsedPerDedicate($project_id, $area)
+    private function getDedicated($project_id, $area)
     {
-        $used = 0;
         $dedicate = 0;
         
         if ($area > 1)
@@ -909,17 +910,33 @@ class StatController extends \yii\web\Controller
                 $exCond = ['area'=>$area];
                 $field = 'area'.$area; // area2 ...  field
                 $dedicate = \app\models\PcLom::find()->select('SUM('.$field.')')->where(['project_id'=>$project_id])->scalar();
-                $used = \app\models\PcViewLomDetail::find()->select('SUM(quantity)')->where(['project_id'=>$project_id, 'area'=>$area])->scalar();
         }
         else
         {
-            $dedicate = \app\models\PcLom::find()->select('SUM(quantity)')->where(['project_id'=>$project_id])->scalar();
-            $used = \app\models\PcViewLomDetail::find()->select('SUM(quantity)')->where(['project_id'=>$project_id])->scalar();
+            $dedicate = \app\models\PcLom::find()->select(' area2 , area3 , area4 , area5 , area6 , area7 , area8 ')->where(['project_id'=>$project_id])->asArray()->one();
+            $dedicate = $dedicate['area2'] + $dedicate['area3'] + $dedicate['area4'] + $dedicate['area5'] + $dedicate['area6'] + $dedicate['area7'] + $dedicate['area8'];
+
         }
         
-        if(empty($used)) $used = 0;
-        if($dedicate == 0) return "-";
-        else return $used.' / '.$dedicate;
+        return $dedicate;
+    }
+
+    private function getOnAction($project_id, $area)
+    {
+        $count = 0;
+        
+        if ($area > 1)
+        {
+                $exCond = ['area'=>$area];
+                $field = 'area'.$area; // area2 ...  field
+                $count = \app\models\PcViewLomDetail::find()->select('SUM(quantity)')->where(['project_id'=>$project_id, 'area'=>$area])->scalar();
+        }
+        else
+        {
+            $count = \app\models\PcViewLomDetail::find()->select('SUM(quantity)')->where(['project_id'=>$project_id])->scalar();
+        }
+        
+        return $count;
     }
 
     public function actionReport_tablestat($id, $AREA, $EXCHANGE_ID, $PHASE=-1)

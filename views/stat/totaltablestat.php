@@ -74,12 +74,15 @@ if(isset($project['id'])) $pId = $project['id'];
                         <tr style="background-color: #1b6d85; color:white; font-weight: bold;">
                                 <td style="text-align:center;">عنوان</td>
                                 
-                                <td style='text-align:center;'>تعداد سایت</td>
+                                
                                 <?php
                                 if($searchParams['area'] == -1)
                                 {
-                                    echo "<td style='text-align:center;'>تخصیص / اقدام‌شده</td>";
+                                    echo "<td style='text-align:center;'>تخصیص</td>";
+                                    echo "<td style='text-align:center;'>اقدام‌شده</td>";
                                 }
+                                else 
+                                    echo "<td style='text-align:center;'>تعداد سایت</td>";
                                 
                                 foreach($opMap as $col=>$array)
                                     {
@@ -97,11 +100,15 @@ if(isset($project['id'])) $pId = $project['id'];
 
                         <tr class="table-row enFont" style="background-color:#93C763; color:#000; font-weight:bold;direction:ltr;" id="<?=$rowId?>" onclick="activateRow(this);">
                             <td style='text-align:center;'><?= $info['title']; ?></td>
-                            <td style='text-align:center;'><?= $info['count']; ?></td>
+                            
                             <?php
                                 if($searchParams['area'] == -1)
                                 {
-                                    echo "<td style='text-align:center;'>".$info['usedPerDedicate']."</td>";
+                                    echo "<td style='text-align:center;'>".$info['dedicated']."</td>";
+                                    echo "<td style='text-align:center;'>".$info['onAction']."</td>";
+                                }
+                                else{
+                                    echo "<td style='text-align:center;'>".$info['count']."</td>";
                                 }
                                 foreach($opMap as $col=>$array)
                                 {
@@ -128,10 +135,15 @@ if(isset($project['id'])) $pId = $project['id'];
                                 $rowId++;
                                 echo "<tr class='table-row enFont' style='color:#000; font-weight:bold;direction:ltr;' id='".$rowId."' onclick='activateRow(this);'>";
                                 echo "<td style='text-align:center;'>".$detail['title']."</td>";
-                                echo "<td style='text-align:center;'>".$detail['count']."</td>";
+                                
                                 if($searchParams['area'] == -1)
                                 {
-                                    echo "<td style='text-align:center;'>".$detail['usedPerDedicate']."</td>";
+                                    echo "<td style='text-align:center;'>".$detail['dedicated']."</td>";
+                                    echo "<td style='text-align:center;'>".$detail['onAction']."</td>";
+                                }
+                                else
+                                {
+                                    echo "<td style='text-align:center;'>".$detail['count']."</td>";
                                 }
 
                                     foreach($opMap as $col=>$array)
