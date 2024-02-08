@@ -553,6 +553,7 @@ class StatController extends \yii\web\Controller
                     $column++;
                 }
                 
+                //return var_dump($tableInfo);
                 return $this->render('totaltablestat', ['searchParams'=>$searchParams, 'exchanges'=>$exchanges, 'tableInfo'=>$tableInfo, 'project'=>$project, 'projects'=>$projects, 'areaSelection'=>$areaSelection, 'opMap'=>$opMap]);
             }
             
@@ -913,8 +914,12 @@ class StatController extends \yii\web\Controller
         }
         else
         {
-            $dedicate = \app\models\PcLom::find()->select(' area2 , area3 , area4 , area5 , area6 , area7 , area8 ')->where(['project_id'=>$project_id])->asArray()->one();
-            $dedicate = $dedicate['area2'] + $dedicate['area3'] + $dedicate['area4'] + $dedicate['area5'] + $dedicate['area6'] + $dedicate['area7'] + $dedicate['area8'];
+            $allRec = \app\models\PcLom::find()->where(['project_id'=>$project_id])->asArray()->all();
+            $sum = 0;
+            foreach($allRec as $rec)
+                $sum = $sum + $rec['area2'] + $rec['area3'] + $rec['area4'] + $rec['area5'] + $rec['area6'] + $rec['area7'] + $rec['area8'];
+
+            $dedicate = $sum;
 
         }
         
@@ -936,6 +941,7 @@ class StatController extends \yii\web\Controller
             $count = \app\models\PcViewLomDetail::find()->select('SUM(quantity)')->where(['project_id'=>$project_id])->scalar();
         }
         
+        if(empty($count)) $count = 0;
         return $count;
     }
 
